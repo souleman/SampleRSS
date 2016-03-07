@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/details_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center_vertical"
+    android:background="#fffcfff6">
+
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/PostTitre"
+    android:text ="Mon Titre"
+    android:textIsSelectable="false"
+    android:textSize="18sp"
+    android:layout_gravity="center_horizontal" />
+
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/PostImage"
+        android:layout_gravity="center_horizontal"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/PostDate"
+        android:text ="Date"
+        android:textIsSelectable="false"
+        android:textSize="12sp"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/PostDescritpion"
+        android:textIsSelectable="false"
+        android:textSize="16sp"
+        android:text ="Description"
+        android:layout_gravity="center_horizontal"
+        />
+
+
+
+</LinearLayout>
