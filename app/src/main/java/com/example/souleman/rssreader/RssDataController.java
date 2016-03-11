@@ -110,6 +110,7 @@ public class RssDataController extends AsyncTask< String, Integer, ArrayList<Pos
 
     @Override
     protected void onPostExecute(ArrayList<PostData> result) {
+        //attribut non utilisé
        ArrayList<PostData> mListToSave = new ArrayList<PostData>();
 
        Toast.makeText(MyActivity.mContext,"Refresh done, with"+result.size() +" items",Toast.LENGTH_LONG).show();

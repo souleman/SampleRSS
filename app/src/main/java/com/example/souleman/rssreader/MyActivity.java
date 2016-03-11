@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MyActivity extends Activity  {
+public class MyActivity extends Activity {
+    //Revois la visibilité des attributs car normalement tout devrais etre private et sans pas static.
+    //pourquoi car tes attributs sont accessible par tous et instancié avant meme la création de ta classe
     public static Context mContext;
 
     public static PostDataDAO mPostDataBase;
@@ -35,8 +37,7 @@ public class MyActivity extends Activity  {
     public final String url = "http://feeds.feedburner.com/elise/simplyrecipes";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
         mContext = this;
@@ -45,48 +46,44 @@ public class MyActivity extends Activity  {
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new RecyclerViewAdapter(this,listData );
+        adapter = new RecyclerViewAdapter(this, listData);
         mRecyclerView.setAdapter(adapter);
 
-        mPostDataBase  = new PostDataDAO(this);
+        mPostDataBase = new PostDataDAO(this);
         mPostDataBase.open();
 
         OldPostDatas = new ArrayList<PostData>();
         OldPostDatas = mPostDataBase.GetAllPostData();
 
-        if(OldPostDatas.size() != 0){
-            Toast.makeText(mContext,"Uploadind data...",Toast.LENGTH_LONG).show();
-            for (int i = 0; i<OldPostDatas.size();i++)
-            {
+        if (OldPostDatas.size() != 0) {
+            Toast.makeText(mContext, "Uploadind data...", Toast.LENGTH_LONG).show();
+            for (int i = 0; i < OldPostDatas.size(); i++) {
                 listData.add(OldPostDatas.get(i));
             }
             adapter.notifyDataSetChanged();
-        }
-        else
-        {
-            Toast.makeText(mContext,"1st Starting... loading data",Toast.LENGTH_SHORT).show();
-            if(checkInternet()){
+        } else {
+            Toast.makeText(mContext, "1st Starting... loading data", Toast.LENGTH_SHORT).show();
+            if (checkInternet()) {
                 ExecuteMyTask();
-            }
-            else{
-                Toast.makeText(this,"Need network connection missing...",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Need network connection missing...", Toast.LENGTH_SHORT).show();
             }
         }
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout)this.findViewById(R.id.swipeRefreshLayout);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-        {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) this.findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 MyRefreshingFunction();
 
                 new Handler().postDelayed(new Runnable() {
-                    @Override public void run() {
+                    @Override
+                    public void run() {
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                 }, 5 * 1000);
 
-             }
+            }
         });
     }
 
@@ -98,33 +95,32 @@ public class MyActivity extends Activity  {
     }
 
     // Loading New Data
-    public void MyRefreshingFunction(){
-        if(checkInternet()){
-            Toast.makeText(this,"please wait until a next message...",Toast.LENGTH_SHORT).show();
+    public void MyRefreshingFunction() {
+        if (checkInternet()) {
+            Toast.makeText(this, "please wait until a next message...", Toast.LENGTH_SHORT).show();
 
             ExecuteMyTask();
-        }
-        else{
-            Toast.makeText(this,"NetWork Connection missing...",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "NetWork Connection missing...", Toast.LENGTH_SHORT).show();
         }
     }
 
     // RSS Reader Function
-    public void ExecuteMyTask(){
+    public void ExecuteMyTask() {
         RssDataController geRss = new RssDataController();
-        try{
-            Toast.makeText(this,"TAST EXECUTING...",Toast.LENGTH_SHORT).show();
+        try {
+            Toast.makeText(this, "TAST EXECUTING...", Toast.LENGTH_SHORT).show();
 
             geRss.execute(url);
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("MyActivity", "Erreur Task not executed ");
         }
         //itemAdapter.notifyDataSetChanged();
     }
 
     // Check Network connection
-    private boolean checkInternet(){
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+    private boolean checkInternet() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
 //For 3G check
         boolean is3g = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
@@ -133,20 +129,17 @@ public class MyActivity extends Activity  {
         boolean isWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
                 .isConnectedOrConnecting();
 
-        if (!is3g && !isWifi)
-        {
-            Toast.makeText(getApplicationContext(),"Please make sure your Network Connection is ON ",Toast.LENGTH_LONG).show();
+        if (!is3g && !isWifi) {
+            Toast.makeText(getApplicationContext(), "Please make sure your Network Connection is ON ", Toast.LENGTH_LONG).show();
             return false;
-        }
-        else
-        {
-        return true;
+        } else {
+            return true;
         }
 
     }
 
     // SAVE DATA SHARED PREFERENCE FUNCTION
-    public static void SavePostData(ArrayList<PostData> mPostdata){
+    public static void SavePostData(ArrayList<PostData> mPostdata) {
 /*
         if(mSwipeRefreshLayout.isRefreshing()){
             Toast.makeText(MyActivity.mContext,"Swipe refreshing",Toast.LENGTH_LONG).show();
@@ -157,7 +150,7 @@ public class MyActivity extends Activity  {
         mPostDataBase.open();
         mPostDataBase.ajouter(mPostdata);
         mPostDataBase.close();
-        Toast.makeText(MyActivity.mContext,"DATA SAVED",Toast.LENGTH_LONG).show();
+        Toast.makeText(MyActivity.mContext, "DATA SAVED", Toast.LENGTH_LONG).show();
 
     }
 }

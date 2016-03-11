@@ -23,7 +23,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<PostData> datas;
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView postTitleView;
         TextView postDateView;
         ImageView postImageView;
@@ -36,26 +36,28 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public RecyclerViewAdapter(Context context, ArrayList<PostData> objects){
+    public RecyclerViewAdapter(Context context, ArrayList<PostData> objects) {
         this.datas = objects;
         this.myContext = (Activity) context;
     }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listitem,null);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listitem, null);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
-
+                //attention lis la doc mais ceci est deprecated utilise getChildAdapterPosition
                 int position = MyActivity.mRecyclerView.getChildPosition(v);
                 PostData postData = MyActivity.listData.get(position);
 
-                Intent postViewdetails =  new Intent(context, PostDetails.class);
-                postViewdetails.putExtra("Titre",postData.getTitre());
-                postViewdetails.putExtra("Date",postData.getDate());
-                postViewdetails.putExtra("Description",postData.getDescription());
-                postViewdetails.putExtra("Image",postData.getImage());
+                Intent postViewdetails = new Intent(context, PostDetails.class);
+                //Utilise ici des attribut static public pour partager avec ta classe PostDetail
+                postViewdetails.putExtra("Titre", postData.getTitre());
+                postViewdetails.putExtra("Date", postData.getDate());
+                postViewdetails.putExtra("Description", postData.getDescription());
+                postViewdetails.putExtra("Image", postData.getImage());
                 context.startActivity(postViewdetails);
             }
         });
@@ -63,9 +65,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         ViewHolder vh = new ViewHolder(view);
         return vh;
     }
+
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-    PostData mPostdata = datas.get(i);
+        PostData mPostdata = datas.get(i);
 
         //Download image using picasso library
         Picasso.with(myContext).load(String.valueOf((mPostdata.getImage())))

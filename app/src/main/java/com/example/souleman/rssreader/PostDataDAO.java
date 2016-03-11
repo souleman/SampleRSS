@@ -11,6 +11,7 @@ import java.util.ArrayList;
  * Created by Souleman on 04/03/2016.
  */
 public class PostDataDAO {
+    //Revois la visibilité des attributs car normalement tout devrais etre private.
 
     protected final static int VERSION = 1;
     protected final static String NOM_FICHIER = "postDatabase.db";
