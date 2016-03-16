@@ -15,11 +15,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MyActivity extends Activity {
-    //Revois la visibilité des attributs car normalement tout devrais etre private et sans pas static.
-    //pourquoi car tes attributs sont accessible par tous et instancié avant meme la création de ta classe
     public static Context mContext;
 
-    public static PostDataDAO mPostDataBase;
+    private static PostDataDAO mPostDataBase;
+    private ArrayList<PostData> OldPostDatas;
+    private Handler handler = new Handler();
+    private final String URL = "http://feeds.feedburner.com/elise/simplyrecipes";
 
     public static RecyclerView mRecyclerView;
     public static RecyclerViewAdapter adapter;
@@ -27,14 +28,11 @@ public class MyActivity extends Activity {
     public static SwipeRefreshLayout mSwipeRefreshLayout;
 
     public static ArrayList<PostData> listData = new ArrayList<PostData>();
-    public static ArrayList<PostData> OldPostDatas;
-    private Handler handler = new Handler();
 
     public MyActivity() {
         mContext = this;
     }
 
-    public final String url = "http://feeds.feedburner.com/elise/simplyrecipes";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +109,7 @@ public class MyActivity extends Activity {
         try {
             Toast.makeText(this, "TAST EXECUTING...", Toast.LENGTH_SHORT).show();
 
-            geRss.execute(url);
+            geRss.execute(URL);
         } catch (Exception e) {
             Log.e("MyActivity", "Erreur Task not executed ");
         }

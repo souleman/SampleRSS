@@ -13,27 +13,27 @@ import java.util.ArrayList;
 public class PostDataDAO {
     //Revois la visibilité des attributs car normalement tout devrais etre private.
 
-    protected final static int VERSION = 1;
-    protected final static String NOM_FICHIER = "postDatabase.db";
+    private final static int VERSION = 1;
+    private final static String NOM_FICHIER = "postDatabase.db";
 
-    public static final String TABLE_NAME ="Postdatabase";
+    private static final String TABLE_NAME ="Postdatabase";
 
-    public static final String POST_KEY = "id";
-    public static final String POST_TITLE = "titre";
-    public static final String POST_DESCRIPTION = "description";
-    public static final String POST_DATE = "data";
-    public static final String POST_IMG = "image";
-
-
-    public static final int Num_KEY = 0;
-    public static final int Num_TITLE = 1;
-    public static final int Num_DESCRIPTION = 2;
-    public static final int Num_DATE = 3;
-    public static final int Num_IMG = 4;
+    private static final String POST_KEY = "id";
+    private static final String POST_TITLE = "titre";
+    private static final String POST_DESCRIPTION = "description";
+    private static final String POST_DATE = "data";
+    private static final String POST_IMG = "image";
 
 
-    public SQLiteDatabase mDB = null;
-    public Databasehandler mHandler = null;
+    private static final int Num_KEY = 0;
+    private static final int Num_TITLE = 1;
+    private static final int Num_DESCRIPTION = 2;
+    private static final int Num_DATE = 3;
+    private static final int Num_IMG = 4;
+
+
+    private SQLiteDatabase mDB = null;
+    private Databasehandler mHandler = null;
 
 
     public PostDataDAO(Context context){

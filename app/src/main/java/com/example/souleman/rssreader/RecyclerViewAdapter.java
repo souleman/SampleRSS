@@ -18,6 +18,11 @@ import java.util.ArrayList;
  * Created by Souleman on 02/03/2016.
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+    public static String TITRE = "Titre";
+    public static String DESCRIPTION = "description";
+    public static String DATE = "date";
+    public static String IMAGE = "imgae";
+
 
     private Activity myContext;
     private ArrayList<PostData> datas;
@@ -54,10 +59,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 Intent postViewdetails = new Intent(context, PostDetails.class);
                 //Utilise ici des attribut static public pour partager avec ta classe PostDetail
-                postViewdetails.putExtra("Titre", postData.getTitre());
-                postViewdetails.putExtra("Date", postData.getDate());
-                postViewdetails.putExtra("Description", postData.getDescription());
-                postViewdetails.putExtra("Image", postData.getImage());
+                postViewdetails.putExtra(TITRE, postData.getTitre());
+                postViewdetails.putExtra(DATE, postData.getDate());
+                postViewdetails.putExtra(DESCRIPTION, postData.getDescription());
+                postViewdetails.putExtra(IMAGE, postData.getImage());
                 context.startActivity(postViewdetails);
             }
         });

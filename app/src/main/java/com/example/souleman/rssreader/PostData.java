@@ -4,29 +4,15 @@ package com.example.souleman.rssreader;
  * Created by Souleman on 09/02/2016.
  */
 public class PostData {
-    //Si tu mets public pourquoi des setter et getter ?
-    public int postId;
+    private int postId;
 
-    public String postTitle;
-    public String postDate;
-    public String postDescritpion;
-    public String postimage;
-    public byte[] postImageByte;
+    private String postTitle;
+    private String postDate;
+    private String postDescritpion;
+    private String postimage;
 
-    //Pourrait tu me dire la visibilité de ton consturcteur ?
-    PostData() {
+     public PostData() {
     }
-
-    //Constructeur non utilisé
-    PostData(int mpostId, String mpostTitle, String mpostDate, String mpostDescritpion, String mpostimage, byte[] postImageByte) {
-        setId(mpostId);
-        setTitre(mpostTitle);
-        setDate(mpostDate);
-        setDescription(mpostDescritpion);
-        setImage(mpostimage);
-        setImageByte(postImageByte);
-    }
-
 
     public int getId() {
         return postId;
@@ -34,15 +20,6 @@ public class PostData {
 
     public void setId(int id) {
         this.postId = id;
-    }
-
-    //Méthode non utilisé
-    public byte[] getImageByte() {
-        return postImageByte;
-    }
-
-    public void setImageByte(byte[] imageUrl) {
-        this.postImageByte = imageUrl;
     }
 
     public String getImage() {
