@@ -18,6 +18,7 @@ import java.util.ArrayList;
  * Created by Souleman on 02/03/2016.
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+    //Ca doit etre dans ton activity qu'il l'utilise (PostDetails) et comme c est pour les extra nomment les EXTRA_TITRE par exemple
     public static final String TITRE = "Titre";
     public static final String DESCRIPTION = "description";
     public static final String DATE = "date";
@@ -25,6 +26,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     private Activity myContext;
+    //attention nommage
     private ArrayList<PostData> datas;
 
 
@@ -52,6 +54,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //pense callback ca t'aidera a mieux structure ton code et enlever les static que je suppose tu n'as pas compris les risques
                 Context context = v.getContext();
 
                 int position = MyActivity.mRecyclerView.getChildAdapterPosition(v);

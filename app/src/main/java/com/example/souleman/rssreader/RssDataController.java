@@ -105,6 +105,7 @@ public class RssDataController extends AsyncTask< String, Integer, ArrayList<Pos
 
     @Override
     protected void onPostExecute(ArrayList<PostData> result) {
+        //pas de toast dans une asyntask
        Toast.makeText(MyActivity.mContext,"Refresh done, with"+result.size() +" items",Toast.LENGTH_LONG).show();
 
         if (result.size() == 0)
@@ -119,6 +120,7 @@ public class RssDataController extends AsyncTask< String, Integer, ArrayList<Pos
                  MyActivity.listData.add(result.get(i));
             }
         }
+        //pense callback ou observer mais vu ton architecture callback qui se dit aussi listener
         MyActivity.adapter.notifyDataSetChanged();
         MyActivity.SavePostData(MyActivity.listData);
     }

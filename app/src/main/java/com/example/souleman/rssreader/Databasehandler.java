@@ -38,6 +38,7 @@ public class Databasehandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        //autant rien faire car si tu fais une mise a jour c'est pour ajouter une colonne ou autre.
         db.execSQL(POST_TABLE_DROP);
         onCreate(db);
     }

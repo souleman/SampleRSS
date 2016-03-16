@@ -16,7 +16,7 @@ public class PostDataDAO {
     private final static int VERSION = 1;
     private final static String NOM_FICHIER = "postDatabase.db";
 
-    private static final String TABLE_NAME ="Postdatabase";
+    private static final String TABLE_NAME = "Postdatabase";
 
     private static final String POST_KEY = "id";
     private static final String POST_TITLE = "titre";
@@ -24,7 +24,7 @@ public class PostDataDAO {
     private static final String POST_DATE = "data";
     private static final String POST_IMG = "image";
 
-
+    //attention nommage
     private static final int Num_KEY = 0;
     private static final int Num_TITLE = 1;
     private static final int Num_DESCRIPTION = 2;
@@ -36,55 +36,55 @@ public class PostDataDAO {
     private Databasehandler mHandler = null;
 
 
-    public PostDataDAO(Context context){
+    public PostDataDAO(Context context) {
         mHandler = new Databasehandler(context, NOM_FICHIER, null, VERSION);
     }
 
-    public SQLiteDatabase open(){
+    public SQLiteDatabase open() {
         mDB = mHandler.getWritableDatabase();
         return mDB;
     }
 
-    public void close(){
+    public void close() {
         mDB.close();
     }
 
-    public SQLiteDatabase getDB(){
+    public SQLiteDatabase getDB() {
         return mDB;
     }
 
 
-    public void ajouter(ArrayList<PostData> postdata)
-    {
+    //pense a que tu fais un traitement lourd alors asynchrone et franglais
+    public void ajouter(ArrayList<PostData> postdata) {
 
         ArrayList<PostData> mPostDataDelete;
         mPostDataDelete = GetAllPostData();
         supprimer(mPostDataDelete);
 
-        for (int i=0; i<postdata.size();i++){
+        for (int i = 0; i < postdata.size(); i++) {
             ContentValues content = new ContentValues();
-            content.put(POST_TITLE,postdata.get(i).getTitre());
-            content.put(POST_DATE,postdata.get(i).getDate());
-            content.put(POST_DESCRIPTION,postdata.get(i).getDescription());
+            content.put(POST_TITLE, postdata.get(i).getTitre());
+            content.put(POST_DATE, postdata.get(i).getDate());
+            content.put(POST_DESCRIPTION, postdata.get(i).getDescription());
             content.put(POST_IMG, postdata.get(i).getImage());
-            mDB.insert(TABLE_NAME,null,content);
+            mDB.insert(TABLE_NAME, null, content);
         }
     }
 
 
+    // attention franglais et pour suppimer une table il y a beaucoup mieux.
     private void supprimer(ArrayList<PostData> postdata) {
         for (int i = 0; i < postdata.size(); i++) {
             mDB.delete(TABLE_NAME, POST_TITLE + " = ?", new String[]{postdata.get(i).getTitre()});
         }
     }
 
-    public ArrayList<PostData> GetAllPostData()
-    {
+    public ArrayList<PostData> GetAllPostData() {
         ArrayList<PostData> postDataList = new ArrayList<PostData>();
 
-        Cursor c = mDB.query(TABLE_NAME,new String[]{POST_KEY,POST_TITLE,POST_DATE,POST_DESCRIPTION,POST_IMG},null,null,null,null,null);
+        Cursor c = mDB.query(TABLE_NAME, new String[]{POST_KEY, POST_TITLE, POST_DATE, POST_DESCRIPTION, POST_IMG}, null, null, null, null, null);
 
-        while (c.moveToNext()){
+        while (c.moveToNext()) {
             PostData mPd = new PostData();
             mPd.setId(c.getInt(Num_KEY));
 

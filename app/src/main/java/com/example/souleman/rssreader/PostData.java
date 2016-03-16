@@ -8,10 +8,12 @@ public class PostData {
 
     private String postTitle;
     private String postDate;
+    //attention orthographe
     private String postDescritpion;
+    //attention nommage
     private String postimage;
 
-     public PostData() {
+    public PostData() {
     }
 
     public int getId() {
