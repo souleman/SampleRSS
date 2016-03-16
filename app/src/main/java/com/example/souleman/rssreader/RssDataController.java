@@ -38,7 +38,7 @@ public class RssDataController extends AsyncTask< String, Integer, ArrayList<Pos
 
         try
         {
-          //  url = new URL("http://feeds.feedburner.com/elise/simplyrecipes");
+          // url = new URL("http://feeds.feedburner.com/elise/simplyrecipes");
             url = new URL(mUrl);
 
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -74,12 +74,7 @@ public class RssDataController extends AsyncTask< String, Integer, ArrayList<Pos
                             start = ((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("src=\"");
                             end = ((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("class=\"");
 
-
-                            //telecharger l'image, la stocker en bitmap
-                 //           url = new URL(((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().substring(start + 5, end - 2));
-                 //           urlConnection = (HttpURLConnection) url.openConnection();
-                 //           in = new BufferedInputStream(urlConnection.getInputStream());
-                            rss.setImage(((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().substring(start + 5, end - 2));
+                        rss.setImage(((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().substring(start + 5, end - 2));
                         }
                     }
                 }
@@ -110,7 +105,6 @@ public class RssDataController extends AsyncTask< String, Integer, ArrayList<Pos
 
     @Override
     protected void onPostExecute(ArrayList<PostData> result) {
-
        Toast.makeText(MyActivity.mContext,"Refresh done, with"+result.size() +" items",Toast.LENGTH_LONG).show();
 
         if (result.size() == 0)

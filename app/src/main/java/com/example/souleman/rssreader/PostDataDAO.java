@@ -57,7 +57,7 @@ public class PostDataDAO {
     public void ajouter(ArrayList<PostData> postdata)
     {
 
-        ArrayList<PostData> mPostDataDelete = new ArrayList<PostData>();
+        ArrayList<PostData> mPostDataDelete;
         mPostDataDelete = GetAllPostData();
         supprimer(mPostDataDelete);
 
@@ -72,7 +72,7 @@ public class PostDataDAO {
     }
 
 
-    public void supprimer(ArrayList<PostData> postdata) {
+    private void supprimer(ArrayList<PostData> postdata) {
         for (int i = 0; i < postdata.size(); i++) {
             mDB.delete(TABLE_NAME, POST_TITLE + " = ?", new String[]{postdata.get(i).getTitre()});
         }
@@ -83,8 +83,6 @@ public class PostDataDAO {
         ArrayList<PostData> postDataList = new ArrayList<PostData>();
 
         Cursor c = mDB.query(TABLE_NAME,new String[]{POST_KEY,POST_TITLE,POST_DATE,POST_DESCRIPTION,POST_IMG},null,null,null,null,null);
-        if(c.getCount() == 0){
-        }
 
         while (c.moveToNext()){
             PostData mPd = new PostData();

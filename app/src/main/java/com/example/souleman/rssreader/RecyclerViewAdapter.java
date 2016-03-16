@@ -18,10 +18,10 @@ import java.util.ArrayList;
  * Created by Souleman on 02/03/2016.
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    public static String TITRE = "Titre";
-    public static String DESCRIPTION = "description";
-    public static String DATE = "date";
-    public static String IMAGE = "imgae";
+    public static final String TITRE = "Titre";
+    public static final String DESCRIPTION = "description";
+    public static final String DATE = "date";
+    public static final String IMAGE = "imgae";
 
 
     private Activity myContext;
@@ -53,12 +53,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
-                //attention lis la doc mais ceci est deprecated utilise getChildAdapterPosition
-                int position = MyActivity.mRecyclerView.getChildPosition(v);
+
+                int position = MyActivity.mRecyclerView.getChildAdapterPosition(v);
                 PostData postData = MyActivity.listData.get(position);
 
                 Intent postViewdetails = new Intent(context, PostDetails.class);
-                //Utilise ici des attribut static public pour partager avec ta classe PostDetail
                 postViewdetails.putExtra(TITRE, postData.getTitre());
                 postViewdetails.putExtra(DATE, postData.getDate());
                 postViewdetails.putExtra(DESCRIPTION, postData.getDescription());
@@ -67,8 +66,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         });
 
-        ViewHolder vh = new ViewHolder(view);
-        return vh;
+        return new ViewHolder(view);
     }
 
     @Override
