@@ -5,36 +5,22 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Menu;
+import android.view.View;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 
-public class MyActivity extends Activity {
-    //jamais un context static
-    public static Context mContext;
-    //depuis quand c'est static ?
-    private static PostDataDAO mPostDataBase;
-    //a supprimer car tu ne l'utilise pas
-    private Handler handler = new Handler();
-    private final String URL = "http://feeds.feedburner.com/elise/simplyrecipes";
+public class MyActivity  extends Activity  implements OnTaskCompleted{
 
-    //depuis quand c'est static ? as tu compris ce que c'était static ?
-    public static RecyclerView mRecyclerView;
-    //attention tu as de nommage qui change pourquoi il ne le fait pas commencer par m, je sais que commencer par m était un truc de google il y 3 ans mais depuis il revient
-    // un peu dessus car pour faire les getter setter automatiquement c'est chiant.
-    //depuis quand c'est static ?
-    public static RecyclerViewAdapter adapter;
-    //depuis quand c'est static ?
-    public static SwipeRefreshLayout mSwipeRefreshLayout;
-    //meme remarque attention le nommage
-    //depuis quand c'est static ?
-    public static ArrayList<PostData> listData = new ArrayList<PostData>();
+    private Context mContext;
+    private PostDataDAO mPostDataBase;
+    private final String URL = "http://feeds.feedburner.com/elise/simplyrecipes";
+    private RecyclerView mRecyclerView;
+    private RecyclerViewAdapter mAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ArrayList<PostData> mListData = new ArrayList<PostData>();
 
     public MyActivity() {
         mContext = this;
@@ -45,17 +31,26 @@ public class MyActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
-        mContext = this;
 
         // Initialize recycler view
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //pourquoi ne pas attendre d'avoir des données au lieu de demander de dessionner un truc vide ?
-        adapter = new RecyclerViewAdapter(this, listData);
-        mRecyclerView.setAdapter(adapter);
+        RecyclerViewInterface mRVI = new RecyclerViewInterface() {
+            @Override
+            public int GetRecyclerViewPosition(View v) {
+                return mRecyclerView.getChildAdapterPosition(v);
+            }
 
-        //Attention tu fais des accès base, ceci devrait etre fait en asynchrone. Pense au cursorLoader.
+            @Override
+            public PostData GetSelectedPostData(int position) {
+                return mListData.get(position);
+            }
+        };
+        mAdapter = new RecyclerViewAdapter(this, mListData,mRVI);
+        mRecyclerView.setAdapter(mAdapter);
+
+       //Attention tu fais des accès base, ceci devrait etre fait en asynchrone. Pense au cursorLoader.
         mPostDataBase = new PostDataDAO(this);
         mPostDataBase.open();
 
@@ -63,22 +58,14 @@ public class MyActivity extends Activity {
         //Tu utilise une base de données alors pense CursorLoader.
         oldPostDatas = mPostDataBase.GetAllPostData();
 
+
         if (oldPostDatas.size() != 0) {
-            //Je ne suis pas trop Taost normalement avec je swiperefresh tu sais si ton app est entrain de ce mettre a jour
-            Toast.makeText(mContext, "Uploadind data...", Toast.LENGTH_LONG).show();
             for (int i = 0; i < oldPostDatas.size(); i++) {
-                listData.add(oldPostDatas.get(i));
+                mListData.add(oldPostDatas.get(i));
             }
-            adapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         } else {
-            //Toast inutile, si tu veux des infos pour toi pense au Logcat
-            Toast.makeText(mContext, "1st Starting... loading data", Toast.LENGTH_SHORT).show();
-            if (checkInternet()) {
-                ExecuteMyTask();
-            } else {
-                // Actuelement c'est plus des snackbar qu'on doit utiliser.
-                Toast.makeText(this, "Need network connection missing...", Toast.LENGTH_SHORT).show();
-            }
+           MyRefreshingFunction();
         }
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) this.findViewById(R.id.swipeRefreshLayout);
@@ -90,21 +77,10 @@ public class MyActivity extends Activity {
         });
     }
 
-    //Tu ne fais rien avec le menu alors supprime le
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my, menu);
-        return true;
-    }
 
-    //pourquoi en public ?
-    //Sinon regarde ligne 70 tu fais un peu la meme chose
-    public void MyRefreshingFunction() {
+    private void MyRefreshingFunction() {
         if (checkInternet()) {
-            //a supprimer
-            //  Toast.makeText(this, "please wait until a next message...", Toast.LENGTH_SHORT).show();
-            ExecuteMyTask();
+             ExecuteMyTask();
         } else {
             Toast.makeText(this, "NetWork Connection missing...", Toast.LENGTH_SHORT).show();
         }
@@ -112,40 +88,58 @@ public class MyActivity extends Activity {
 
     // RSS Reader Function
     public void ExecuteMyTask() {
-        RssDataController geRss = new RssDataController();
-        //Pourquoi un try catch ?
-        try {
+        Toast.makeText(this, "ExecuteMyTask ...", Toast.LENGTH_SHORT).show();
+
+        OnTaskCompleted mCompleted = new OnTaskCompleted() {
+            @Override
+            public void onTaskCompleted(ArrayList<PostData> result) {
+                if(mSwipeRefreshLayout.isRefreshing()){
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+
+                Toast.makeText(mContext,"TASK COMPLETED : "+ result.size(),Toast.LENGTH_SHORT).show();
+
+                if (result.size() == 0){
+                    Toast.makeText(mContext,"Erreur de chargement...",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    mListData.clear();
+                    for (int i = 0 ; i < result.size();i++){
+                        mListData.add(result.get(i));
+                    }
+                }
+                mAdapter.notifyDataSetChanged();
+                SavePostData(mListData);
+
+            }
+       };
+        RssDataController geRss = new RssDataController(mCompleted);
             geRss.execute(URL);
-        } catch (Exception e) {
-            Log.e("MyActivity", "Erreur Task not executed ");
-        }
     }
 
-    // Check Network connection
-    // La doc peut t'aider http://developer.android.com/training/monitoring-device-state/connectivity-monitoring.html
     private boolean checkInternet() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-        if (activeNetwork != null) { // connected to the internet
-            return true;
-        } else {
-            Toast.makeText(MyActivity.mContext, "Please make sur the Connexion is ON", Toast.LENGTH_LONG).show();
-            return false;
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        if (!isConnected){
+            Toast.makeText(mContext, "Please make sur the Connexion is ON", Toast.LENGTH_LONG).show();
         }
+            return isConnected;
     }
 
 
     // SAVE DATA SHARED PREFERENCE FUNCTION
-    public static void SavePostData(ArrayList<PostData> mPostdata) {
-        if (mSwipeRefreshLayout.isRefreshing()) {
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
+    public void SavePostData(ArrayList<PostData> mPostdata) {
         //rien a faire ici.
         mPostDataBase.open();
-        mPostDataBase.ajouter(mPostdata);
+        mPostDataBase.add(mPostdata);
         mPostDataBase.close();
-        //a supprimer l'utilisateur n'a pas besoin de savoir ca
-        Toast.makeText(MyActivity.mContext, "DATA SAVED", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onTaskCompleted(ArrayList<PostData> result) {
 
     }
 }

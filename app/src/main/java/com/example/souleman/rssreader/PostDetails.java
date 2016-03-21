@@ -1,6 +1,7 @@
 package com.example.souleman.rssreader;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,35 +12,35 @@ import com.squareup.picasso.Picasso;
  * Created by Souleman on 11/02/2016.
  */
 public class PostDetails extends Activity {
+    public static final String EXTRA_TITRE = "Titre";
+    public static final String EXTRA_DESCRIPTION = "description";
+    public static final String EXTRA_DATE = "date";
+    public static final String EXTRA_IMAGE = "imgae";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_detailled_layout);
 
-        //Attention nommage
-        TextView Titre = (TextView) findViewById(R.id.PostTitre);
-        TextView Date = (TextView) findViewById(R.id.PostDate);
-        //tu fais souvent l'erreur c'est DESCRIPTION
-        TextView Descritpion = (TextView) findViewById(R.id.PostDescritpion);
-        ImageView Image = (ImageView) findViewById(R.id.PostImage);
+        TextView titre = (TextView) findViewById(R.id.PostTitre);
+        TextView date = (TextView) findViewById(R.id.PostDate);
+        TextView description = (TextView) findViewById(R.id.PostDescription);
+        ImageView image = (ImageView) findViewById(R.id.PostImage);
 
-        //alors si tu veux utiliser m___ c'est pour les attributs de classe et non de méthode
-        Bundle mBundle = this.getIntent().getExtras();
+        Bundle postDetailsBundle = this.getIntent().getExtras();
 
-        String pTitre = mBundle.getString(RecyclerViewAdapter.TITRE);
-        String pDate = mBundle.getString(RecyclerViewAdapter.DATE);
-        String pDescription = mBundle.getString(RecyclerViewAdapter.DESCRIPTION);
-        String pImage = mBundle.getString(RecyclerViewAdapter.IMAGE);
+        String postDetailsTitre = postDetailsBundle.getString(EXTRA_TITRE);
+        String postDetailsDate = postDetailsBundle.getString(EXTRA_DATE);
+        String postDetailsDescription = postDetailsBundle.getString(EXTRA_DESCRIPTION);
+        String postDetailsImage = postDetailsBundle.getString(EXTRA_IMAGE);
 
-        Titre.setText(pTitre);
-        Date.setText(pDate);
-        Descritpion.setText(pDescription);
-        //pour faire plus pro il faudrait faire des images error et holder.
+        titre.setText(postDetailsTitre);
+        date.setText(postDetailsDate);
+        description.setText(postDetailsDescription);
         //a tu compris a quoi sert le holder ? On n'utilise pas plus forcement de holder mais du blanc passe très bien. Regarde le play store.
-        Picasso.with(this).load(pImage)
-                .error(R.drawable.ic_launcher)
-                .placeholder(R.drawable.ic_launcher)
-                .into(Image);
+        Picasso.with(this).load(postDetailsImage)
+                .error(R.drawable.error)
+                .placeholder(Color.WHITE)
+                .into(image);
     }
 }

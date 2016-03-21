@@ -8,10 +8,8 @@ public class PostData {
 
     private String postTitle;
     private String postDate;
-    //attention orthographe
-    private String postDescritpion;
-    //attention nommage
-    private String postimage;
+    private String postDescription;
+    private String postImage;
 
     public PostData() {
     }
@@ -25,11 +23,11 @@ public class PostData {
     }
 
     public String getImage() {
-        return postimage;
+        return postImage;
     }
 
     public void setImage(String image) {
-        this.postimage = image;
+        this.postImage = image;
     }
 
     public String getTitre() {
@@ -49,11 +47,11 @@ public class PostData {
     }
 
     public String getDescription() {
-        return postDescritpion;
+        return postDescription;
     }
 
     public void setDescription(String description) {
-        this.postDescritpion = description;
+        this.postDescription = description;
     }
 
 }

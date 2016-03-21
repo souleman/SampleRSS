@@ -18,17 +18,13 @@ import java.util.ArrayList;
  * Created by Souleman on 02/03/2016.
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    //Ca doit etre dans ton activity qu'il l'utilise (PostDetails) et comme c est pour les extra nomment les EXTRA_TITRE par exemple
-    public static final String TITRE = "Titre";
-    public static final String DESCRIPTION = "description";
-    public static final String DATE = "date";
-    public static final String IMAGE = "imgae";
+
+    private RecyclerViewInterface listener;
 
 
     private Activity myContext;
     //attention nommage
     private ArrayList<PostData> datas;
-
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView postTitleView;
@@ -43,28 +39,32 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
     }
 
-    public RecyclerViewAdapter(Context context, ArrayList<PostData> objects) {
+    public RecyclerViewAdapter(Context context, ArrayList<PostData> objects,RecyclerViewInterface listener) {
         this.datas = objects;
+        this.listener = listener;
         this.myContext = (Activity) context;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listitem, null);
+
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //pense callback ca t'aidera a mieux structure ton code et enlever les static que je suppose tu n'as pas compris les risques
                 Context context = v.getContext();
 
-                int position = MyActivity.mRecyclerView.getChildAdapterPosition(v);
-                PostData postData = MyActivity.listData.get(position);
+                int position = listener.GetRecyclerViewPosition(v);
+                PostData postData = listener.GetSelectedPostData(position);
 
                 Intent postViewdetails = new Intent(context, PostDetails.class);
-                postViewdetails.putExtra(TITRE, postData.getTitre());
-                postViewdetails.putExtra(DATE, postData.getDate());
-                postViewdetails.putExtra(DESCRIPTION, postData.getDescription());
-                postViewdetails.putExtra(IMAGE, postData.getImage());
+                postViewdetails.putExtra(PostDetails.EXTRA_TITRE, postData.getTitre());
+                postViewdetails.putExtra(PostDetails.EXTRA_DATE, postData.getDate());
+                postViewdetails.putExtra(PostDetails.EXTRA_DESCRIPTION, postData.getDescription());
+                postViewdetails.putExtra(PostDetails.EXTRA_IMAGE, postData.getImage());
                 context.startActivity(postViewdetails);
             }
         });
@@ -76,7 +76,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         PostData mPostdata = datas.get(i);
 
-        //Download image using picasso library
         Picasso.with(myContext).load(String.valueOf((mPostdata.getImage())))
                 .error(R.drawable.ic_launcher)
                 .placeholder(R.drawable.ic_launcher)

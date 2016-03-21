@@ -1,7 +1,6 @@
 package com.example.souleman.rssreader;
 
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -23,6 +22,13 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class RssDataController extends AsyncTask< String, Integer, ArrayList<PostData>>
 {
+    private OnTaskCompleted listener;
+
+    public RssDataController(OnTaskCompleted listener)
+    {
+        this.listener = listener;
+    }
+
     @Override
     protected void onPreExecute() {
         // TODO Auto-generated method stub
@@ -105,23 +111,6 @@ public class RssDataController extends AsyncTask< String, Integer, ArrayList<Pos
 
     @Override
     protected void onPostExecute(ArrayList<PostData> result) {
-        //pas de toast dans une asyntask
-       Toast.makeText(MyActivity.mContext,"Refresh done, with"+result.size() +" items",Toast.LENGTH_LONG).show();
-
-        if (result.size() == 0)
-        {
-            Toast.makeText(MyActivity.mContext,"Erreur de chargement...",Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-            MyActivity.listData.clear();
-            for (int i = 0 ; i < result.size();i++)
-            {
-                 MyActivity.listData.add(result.get(i));
-            }
-        }
-        //pense callback ou observer mais vu ton architecture callback qui se dit aussi listener
-        MyActivity.adapter.notifyDataSetChanged();
-        MyActivity.SavePostData(MyActivity.listData);
+       listener.onTaskCompleted(result);
     }
 }
