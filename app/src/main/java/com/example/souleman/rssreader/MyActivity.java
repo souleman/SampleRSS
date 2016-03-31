@@ -50,12 +50,10 @@ public class MyActivity  extends Activity  implements OnTaskCompleted{
         mAdapter = new RecyclerViewAdapter(this, mListData,mRVI);
         mRecyclerView.setAdapter(mAdapter);
 
-       //Attention tu fais des accès base, ceci devrait etre fait en asynchrone. Pense au cursorLoader.
         mPostDataBase = new PostDataDAO(this);
         mPostDataBase.open();
 
         ArrayList<PostData> oldPostDatas = new ArrayList<PostData>();
-        //Tu utilise une base de données alors pense CursorLoader.
         oldPostDatas = mPostDataBase.GetAllPostData();
 
 
@@ -82,13 +80,13 @@ public class MyActivity  extends Activity  implements OnTaskCompleted{
         if (checkInternet()) {
              ExecuteMyTask();
         } else {
-            Toast.makeText(this, "NetWork Connection missing...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.NetWork_Missing, Toast.LENGTH_SHORT).show();
         }
     }
 
     // RSS Reader Function
     public void ExecuteMyTask() {
-        Toast.makeText(this, "ExecuteMyTask ...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.Execute_MyTask, Toast.LENGTH_SHORT).show();
 
         OnTaskCompleted mCompleted = new OnTaskCompleted() {
             @Override
@@ -97,10 +95,10 @@ public class MyActivity  extends Activity  implements OnTaskCompleted{
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
 
-                Toast.makeText(mContext,"TASK COMPLETED : "+ result.size(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,R.string.TASK_COMPLETED+ result.size(),Toast.LENGTH_SHORT).show();
 
                 if (result.size() == 0){
-                    Toast.makeText(mContext,"Erreur de chargement...",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext,R.string.Loading_Error,Toast.LENGTH_SHORT).show();
                 }
                 else{
                     mListData.clear();
@@ -124,7 +122,7 @@ public class MyActivity  extends Activity  implements OnTaskCompleted{
                 activeNetwork.isConnectedOrConnecting();
 
         if (!isConnected){
-            Toast.makeText(mContext, "Please make sur the Connexion is ON", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, R.string.Make_Connexion_ON, Toast.LENGTH_LONG).show();
         }
             return isConnected;
     }
@@ -132,7 +130,6 @@ public class MyActivity  extends Activity  implements OnTaskCompleted{
 
     // SAVE DATA SHARED PREFERENCE FUNCTION
     public void SavePostData(ArrayList<PostData> mPostdata) {
-        //rien a faire ici.
         mPostDataBase.open();
         mPostDataBase.add(mPostdata);
         mPostDataBase.close();

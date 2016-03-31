@@ -5,4 +5,12 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <string name="NetWork_Missing">NetWork Connection missing...</string>
+    <string name="Execute_MyTask">ExecuteMyTask ...</string>
+    <string name="TASK_COMPLETED">TASK COMPLETED : </string>
+    <string name="Loading_Error">Loading error ...</string>
+    <string name="Make_Connexion_ON">Please make sur the Connexion is ON</string>
+
+
+
 </resources>
