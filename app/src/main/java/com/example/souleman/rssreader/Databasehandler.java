@@ -9,13 +9,13 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class Databasehandler extends SQLiteOpenHelper {
 
+    private static final String POST_TABLE_NAME = "Postdatabase";
+
     private static final String POST_KEY = "id";
     private static final String POST_TITLE = "titre";
     private static final String POST_DESCRIPTION = "description";
     private static final String POST_DATE = "data";
     private static final String POST_IMG = "image";
-
-    private static final String POST_TABLE_NAME = "Postdatabase";
 
     private static final String POST_TABLE_CREATE =
             "CREATE TABLE " + POST_TABLE_NAME + " (" +
@@ -26,6 +26,7 @@ public class Databasehandler extends SQLiteOpenHelper {
                     POST_IMG + " TEXT);";
 
     private static final String POST_TABLE_DROP = "DROP TABLE IF EXISTS" + POST_TABLE_NAME + ";";
+
 
     public Databasehandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -38,5 +39,7 @@ public class Databasehandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL(POST_TABLE_DROP);
+        onCreate(db);
     }
 }
