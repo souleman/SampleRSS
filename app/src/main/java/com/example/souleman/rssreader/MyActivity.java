@@ -1,19 +1,28 @@
 package com.example.souleman.rssreader;
 
 import android.app.Activity;
+import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 
-public class MyActivity  extends Activity  implements OnTaskCompleted{
-
+public class MyActivity  extends Activity  implements OnTaskCompleted ,LoaderManager.LoaderCallbacks<Cursor> {
+    MyListCursorAdapter mCursorAdapter;
+    private static final int LOADER_SEARCH_RESULTS = 0;
+    private Cursor mCursor;
     private Context mContext;
     private PostDataDAO mPostDataBase;
     private final String URL = "http://feeds.feedburner.com/elise/simplyrecipes";
@@ -36,6 +45,7 @@ public class MyActivity  extends Activity  implements OnTaskCompleted{
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+
         RecyclerViewInterface mRVI = new RecyclerViewInterface() {
             @Override
             public int GetRecyclerViewPosition(View v) {
@@ -44,27 +54,19 @@ public class MyActivity  extends Activity  implements OnTaskCompleted{
 
             @Override
             public PostData GetSelectedPostData(int position) {
+                mCursor.getString(position);
                 return mListData.get(position);
             }
         };
-        mAdapter = new RecyclerViewAdapter(this, mListData,mRVI);
-        mRecyclerView.setAdapter(mAdapter);
 
-        mPostDataBase = new PostDataDAO(this);
-        mPostDataBase.open();
+         this.getLoaderManager().initLoader(LOADER_SEARCH_RESULTS, null, this);
 
-        ArrayList<PostData> oldPostDatas = new ArrayList<PostData>();
-        oldPostDatas = mPostDataBase.GetAllPostData();
+        mCursor = getContentResolver().query(MyContentProvider.CONTENT_URI,POSTDATA_SUMMARY_PROJECTION,null,null,null);
+        Toast.makeText(this, " DATA : "+mCursor.getCount(), Toast.LENGTH_SHORT).show();
 
+        mCursorAdapter = new MyListCursorAdapter(this,mCursor,mRVI);
+        mRecyclerView.setAdapter(mCursorAdapter);
 
-        if (oldPostDatas.size() != 0) {
-            for (int i = 0; i < oldPostDatas.size(); i++) {
-                mListData.add(oldPostDatas.get(i));
-            }
-            mAdapter.notifyDataSetChanged();
-        } else {
-           MyRefreshingFunction();
-        }
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) this.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -74,7 +76,6 @@ public class MyActivity  extends Activity  implements OnTaskCompleted{
             }
         });
     }
-
 
     private void MyRefreshingFunction() {
         if (checkInternet()) {
@@ -86,16 +87,15 @@ public class MyActivity  extends Activity  implements OnTaskCompleted{
 
     // RSS Reader Function
     public void ExecuteMyTask() {
-        Toast.makeText(this, R.string.Execute_MyTask, Toast.LENGTH_SHORT).show();
-
         OnTaskCompleted mCompleted = new OnTaskCompleted() {
             @Override
             public void onTaskCompleted(ArrayList<PostData> result) {
+
+                Toast.makeText(mContext, " "+ result.size(), Toast.LENGTH_SHORT).show();
+
                 if(mSwipeRefreshLayout.isRefreshing()){
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
-
-                Toast.makeText(mContext,R.string.TASK_COMPLETED+ result.size(),Toast.LENGTH_SHORT).show();
 
                 if (result.size() == 0){
                     Toast.makeText(mContext,R.string.Loading_Error,Toast.LENGTH_SHORT).show();
@@ -106,9 +106,7 @@ public class MyActivity  extends Activity  implements OnTaskCompleted{
                         mListData.add(result.get(i));
                     }
                 }
-                mAdapter.notifyDataSetChanged();
-                SavePostData(mListData);
-
+                  SavePostData(mListData);
             }
        };
         RssDataController geRss = new RssDataController(mCompleted);
@@ -129,14 +127,49 @@ public class MyActivity  extends Activity  implements OnTaskCompleted{
 
 
     // SAVE DATA SHARED PREFERENCE FUNCTION
-    public void SavePostData(ArrayList<PostData> mPostdata) {
-        mPostDataBase.open();
-        mPostDataBase.add(mPostdata);
-        mPostDataBase.close();
+    public void SavePostData(ArrayList<PostData> result) {
+       getContentResolver().delete(MyContentProvider.CONTENT_URI, null, null);
+        for (int i = 0; i < result.size(); i++) {
+
+            ContentValues content = new ContentValues();
+
+            content.put(PostDataDAO.POST_TITLE, result.get(i).getTitre());
+            content.put(PostDataDAO.POST_DATE, result.get(i).getDate());
+            content.put(PostDataDAO.POST_DESCRIPTION, result.get(i).getDescription());
+            content.put(PostDataDAO.POST_IMG, result.get(i).getImage());
+            getContentResolver().insert(MyContentProvider.CONTENT_URI,content);
+        }
+        mCursor = getContentResolver().query(MyContentProvider.CONTENT_URI,POSTDATA_SUMMARY_PROJECTION,null,null,null);
+        mCursorAdapter.swapCursor(mCursor);
     }
 
     @Override
     public void onTaskCompleted(ArrayList<PostData> result) {
+    }
 
+    // These are the Contacts rows that we will retrieve.
+    static final String[] POSTDATA_SUMMARY_PROJECTION = new String[] {
+            "titre",
+            "description",
+            "data",
+            "image",
+    };
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri POSTDATA_URI = mPostDataBase.CONTENT_URI;
+
+        CursorLoader cursorLoader = new CursorLoader(this, POSTDATA_URI,POSTDATA_SUMMARY_PROJECTION,null, null, null);
+        return cursorLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mCursorAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mCursorAdapter.swapCursor(null);
     }
 }

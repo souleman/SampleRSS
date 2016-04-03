@@ -2,6 +2,7 @@ package com.example.souleman.rssreader;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,31 +18,39 @@ import com.squareup.picasso.Picasso;
  */
 public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorAdapter.ViewHolder> implements  View.OnClickListener{
     private Activity myContext;
+    private Cursor cursor;
     private RecyclerViewInterface listener;
     private OnItemClickListener onItemClickListener;
 
     public MyListCursorAdapter(Context context, Cursor cursor, RecyclerViewInterface mRVI){
         super(context,cursor);
         this.listener = mRVI;
+        this.cursor = cursor;
         this.myContext = (Activity) context;
 
     }
 
     @Override
-    public void onClick(final View view)
+    public void onClick(final View v)
     {
-        if (this.onItemClickListener != null)
-        {
-            final RecyclerView recyclerView = (RecyclerView) view.getParent();
-            final int position = recyclerView.getChildLayoutPosition(view);
-            if (position != RecyclerView.NO_POSITION)
-            {
+        Context context = v.getContext();
 
-              final Cursor cursor = null;
-                cursor.moveToPosition(position);
-              this.onItemClickListener.onItemClicked(cursor);
-            }
-        }
+        int position = listener.GetRecyclerViewPosition(v);
+        cursor.moveToPosition(position);
+
+        PostData postData = new PostData();
+        postData.setTitre(cursor.getString(cursor.getColumnIndexOrThrow("titre")));
+        postData.setDate(cursor.getString(cursor.getColumnIndexOrThrow("data")));
+        postData.setDescription(cursor.getString(cursor.getColumnIndexOrThrow("description")));
+        postData.setImage(cursor.getString(cursor.getColumnIndexOrThrow("image")));
+
+        Intent postViewdetails = new Intent(context, PostDetails.class);
+        postViewdetails.putExtra(PostDetails.EXTRA_TITRE, postData.getTitre());
+        postViewdetails.putExtra(PostDetails.EXTRA_DATE, postData.getDate());
+        postViewdetails.putExtra(PostDetails.EXTRA_DESCRIPTION, postData.getDescription());
+        postViewdetails.putExtra(PostDetails.EXTRA_IMAGE, postData.getImage());
+        context.startActivity(postViewdetails);
+
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
