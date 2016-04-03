@@ -16,10 +16,14 @@ public class MyContentProvider extends ContentProvider {
     private static final String POST_KEY = "id";
     private static final String POST_TITLE = "titre";
 
-    public static final String AUTHORITY = "com.example.souleman.rssreader.authority";
+    public static final String AUTHORITY = "com.example.souleman.rssreader.MyContentProvider";
+    public static final String TABLE_PATH_PICTURE = PostDataDAO.TABLE_NAME;
+
+
+
 
     // URI de notre content provider, elle sera utilisé pour accéder au ContentProvider
-     public static final Uri CONTENT_URI = Uri.parse("content://com.example.souleman.rssreader.MyContentProvider/PostData");
+     public static final Uri CONTENT_URI = Uri.parse("content://" +AUTHORITY + "/" +TABLE_PATH_PICTURE);
 
     // Le Mime de notre content provider, la premiére partie est toujours identique
     public static final String CONTENT_PROVIDER_MIME = "vnd.android.cursor.dir/vnd.com.example.souleman.rssreader";

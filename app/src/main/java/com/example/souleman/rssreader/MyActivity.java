@@ -19,15 +19,13 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MyActivity  extends Activity  implements OnTaskCompleted ,LoaderManager.LoaderCallbacks<Cursor> {
+public class MyActivity  extends Activity  implements LoaderManager.LoaderCallbacks<Cursor> {
     MyListCursorAdapter mCursorAdapter;
     private static final int LOADER_SEARCH_RESULTS = 0;
     private Cursor mCursor;
     private Context mContext;
-    private PostDataDAO mPostDataBase;
     private final String URL = "http://feeds.feedburner.com/elise/simplyrecipes";
     private RecyclerView mRecyclerView;
-    private RecyclerViewAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ArrayList<PostData> mListData = new ArrayList<PostData>();
 
@@ -57,16 +55,16 @@ public class MyActivity  extends Activity  implements OnTaskCompleted ,LoaderMan
                 mCursor.getString(position);
                 return mListData.get(position);
             }
+
+            @Override
+            public Cursor getMyCursor() {
+                return mCursor;
+            }
         };
+        getLoaderManager().initLoader(LOADER_SEARCH_RESULTS, null, this);
 
-         this.getLoaderManager().initLoader(LOADER_SEARCH_RESULTS, null, this);
-
-        mCursor = getContentResolver().query(MyContentProvider.CONTENT_URI,POSTDATA_SUMMARY_PROJECTION,null,null,null);
-        Toast.makeText(this, " DATA : "+mCursor.getCount(), Toast.LENGTH_SHORT).show();
-
-        mCursorAdapter = new MyListCursorAdapter(this,mCursor,mRVI);
+        mCursorAdapter = new MyListCursorAdapter(this, mCursor, mRVI);
         mRecyclerView.setAdapter(mCursorAdapter);
-
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) this.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -90,9 +88,6 @@ public class MyActivity  extends Activity  implements OnTaskCompleted ,LoaderMan
         OnTaskCompleted mCompleted = new OnTaskCompleted() {
             @Override
             public void onTaskCompleted(ArrayList<PostData> result) {
-
-                Toast.makeText(mContext, " "+ result.size(), Toast.LENGTH_SHORT).show();
-
                 if(mSwipeRefreshLayout.isRefreshing()){
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
@@ -125,26 +120,21 @@ public class MyActivity  extends Activity  implements OnTaskCompleted ,LoaderMan
             return isConnected;
     }
 
-
     // SAVE DATA SHARED PREFERENCE FUNCTION
     public void SavePostData(ArrayList<PostData> result) {
        getContentResolver().delete(MyContentProvider.CONTENT_URI, null, null);
+
         for (int i = 0; i < result.size(); i++) {
-
             ContentValues content = new ContentValues();
-
             content.put(PostDataDAO.POST_TITLE, result.get(i).getTitre());
             content.put(PostDataDAO.POST_DATE, result.get(i).getDate());
             content.put(PostDataDAO.POST_DESCRIPTION, result.get(i).getDescription());
             content.put(PostDataDAO.POST_IMG, result.get(i).getImage());
             getContentResolver().insert(MyContentProvider.CONTENT_URI,content);
         }
-        mCursor = getContentResolver().query(MyContentProvider.CONTENT_URI,POSTDATA_SUMMARY_PROJECTION,null,null,null);
-        mCursorAdapter.swapCursor(mCursor);
-    }
 
-    @Override
-    public void onTaskCompleted(ArrayList<PostData> result) {
+      mCursor = getContentResolver().query(MyContentProvider.CONTENT_URI,POSTDATA_SUMMARY_PROJECTION,null,null,null);
+      mCursorAdapter.swapCursor(mCursor);
     }
 
     // These are the Contacts rows that we will retrieve.
@@ -157,14 +147,21 @@ public class MyActivity  extends Activity  implements OnTaskCompleted ,LoaderMan
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri POSTDATA_URI = mPostDataBase.CONTENT_URI;
+        Uri uri = MyContentProvider.CONTENT_URI;
 
-        CursorLoader cursorLoader = new CursorLoader(this, POSTDATA_URI,POSTDATA_SUMMARY_PROJECTION,null, null, null);
-        return cursorLoader;
-    }
+        return new CursorLoader(
+                mContext,                           // Parent activity context
+                uri ,                              // Table to query
+                POSTDATA_SUMMARY_PROJECTION,     // Projection to return
+                null,            // No selection clause
+                null,            // No selection arguments
+                null             // Default sort order
+            );
+        }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mCursor = data;
         mCursorAdapter.swapCursor(data);
     }
 

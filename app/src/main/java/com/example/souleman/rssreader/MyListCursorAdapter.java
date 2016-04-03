@@ -36,7 +36,9 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         Context context = v.getContext();
 
         int position = listener.GetRecyclerViewPosition(v);
-        cursor.moveToPosition(position);
+        cursor = listener.getMyCursor();
+
+         cursor.moveToPosition(position);
 
         PostData postData = new PostData();
         postData.setTitre(cursor.getString(cursor.getColumnIndexOrThrow("titre")));
