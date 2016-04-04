@@ -37,7 +37,7 @@ public class PostDetails extends Activity {
         titre.setText(postDetailsTitre);
         date.setText(postDetailsDate);
         description.setText(postDetailsDescription);
-        //a tu compris a quoi sert le holder ? On n'utilise pas plus forcement de holder mais du blanc passe très bien. Regarde le play store.
+
         Picasso.with(this).load(postDetailsImage)
                 .error(R.drawable.error)
                 .placeholder(Color.WHITE)

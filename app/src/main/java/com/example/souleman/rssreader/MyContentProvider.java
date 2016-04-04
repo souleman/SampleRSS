@@ -13,27 +13,18 @@ import android.util.Log;
  */
 public class MyContentProvider extends ContentProvider {
 
-    private static final String POST_KEY = "id";
-    private static final String POST_TITLE = "titre";
+    private static final String POST_KEY = PostDataDAO.POST_KEY;
+    private static final String POST_TITLE = PostDataDAO.POST_TITLE;
 
     public static final String AUTHORITY = "com.example.souleman.rssreader.MyContentProvider";
     public static final String TABLE_PATH_PICTURE = PostDataDAO.TABLE_NAME;
-
-
-
-
-    // URI de notre content provider, elle sera utilisé pour accéder au ContentProvider
-     public static final Uri CONTENT_URI = Uri.parse("content://" +AUTHORITY + "/" +TABLE_PATH_PICTURE);
-
-    // Le Mime de notre content provider, la premiére partie est toujours identique
+    public static final Uri CONTENT_URI = Uri.parse("content://" +AUTHORITY + "/" +TABLE_PATH_PICTURE);
     public static final String CONTENT_PROVIDER_MIME = "vnd.android.cursor.dir/vnd.com.example.souleman.rssreader";
 
-    // Version de notre base de données
     private final static int CONTENT_PROVIDER_VERSION = 1;
-    // Nom de notre base de données
-    private final static String CONTENT_PROVIDER_NOM_FICHIER = "postDatabase.db";
+    private final static String CONTENT_PROVIDER_NOM_FICHIER = PostDataDAO.NOM_FICHIER;
 
-    private static final String CONTENT_PROVIDER_TABLE_NAME = "Postdatabase";
+    private static final String CONTENT_PROVIDER_TABLE_NAME = PostDataDAO.TABLE_NAME;
     Databasehandler dbHelper;
 
     @Override
@@ -41,7 +32,6 @@ public class MyContentProvider extends ContentProvider {
         dbHelper = new Databasehandler(getContext(), CONTENT_PROVIDER_NOM_FICHIER, null,CONTENT_PROVIDER_VERSION);
         return true;
     }
-
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
@@ -57,10 +47,6 @@ public class MyContentProvider extends ContentProvider {
                     null);
         }    }
 
-
-public void toto(){
-
-}
 
     @Override
     public String getType(Uri uri) {

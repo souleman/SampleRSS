@@ -22,7 +22,7 @@ public class PostDataDAO {
     // Version de notre base de données
     private final static int VERSION = 1;
     // Nom de notre base de données
-    private final static String NOM_FICHIER = "postDatabase.db";
+    public final static String NOM_FICHIER = "postDatabase.db";
     // Nom de la table de notre base
     public static final String TABLE_NAME = "Postdatabase";
 
@@ -69,7 +69,6 @@ public class PostDataDAO {
     }
 
 
-    //pense a que tu fais un traitement lourd alors asynchrone et franglais
     public void add(ArrayList<PostData> postdata) {
         delete();
 
@@ -149,8 +148,5 @@ public class PostDataDAO {
         }
         return -1;
     }
-
-//    addAsyncTask addAsyncTasks = new addAsyncTask();
-//    addAsyncTasks.execute(postdata);
 
 }

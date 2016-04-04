@@ -19,13 +19,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MyActivity  extends Activity  implements LoaderManager.LoaderCallbacks<Cursor> {
-    MyListCursorAdapter mCursorAdapter;
+    private MyListCursorAdapter mCursorAdapter;
     private static final int LOADER_SEARCH_RESULTS = 0;
-    private Context mContext;
+    private final Context mContext;
     private final String URL = "http://feeds.feedburner.com/elise/simplyrecipes";
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private ArrayList<PostData> mListData = new ArrayList<PostData>();
 
     public MyActivity() {
         mContext = this;
@@ -48,7 +47,7 @@ public class MyActivity  extends Activity  implements LoaderManager.LoaderCallba
         };
         getLoaderManager().initLoader(LOADER_SEARCH_RESULTS, null, this);
 
-        mCursorAdapter = new MyListCursorAdapter(this, null, mRVI);
+        mCursorAdapter = new MyListCursorAdapter(this, mRVI);
         mRecyclerView.setAdapter(mCursorAdapter);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) this.findViewById(R.id.swipeRefreshLayout);
@@ -76,17 +75,12 @@ public class MyActivity  extends Activity  implements LoaderManager.LoaderCallba
                 if(mSwipeRefreshLayout.isRefreshing()){
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
-
                 if (result.size() == 0){
                     Toast.makeText(mContext,R.string.Loading_Error,Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    mListData.clear();
-                    for (int i = 0 ; i < result.size();i++){
-                        mListData.add(result.get(i));
-                    }
+                    SavePostData(result);
                 }
-                  SavePostData(mListData);
             }
        };
         RssDataController geRss = new RssDataController(mCompleted);
@@ -122,10 +116,10 @@ public class MyActivity  extends Activity  implements LoaderManager.LoaderCallba
 
     // These are the Contacts rows that we will retrieve.
     static final String[] POSTDATA_SUMMARY_PROJECTION = new String[] {
-            "titre",
-            "description",
-            "data",
-            "image",
+            PostDataDAO.POST_TITLE,
+            PostDataDAO.POST_DESCRIPTION,
+            PostDataDAO.POST_DATE,
+            PostDataDAO.POST_IMG,
     };
 
     @Override

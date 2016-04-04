@@ -20,13 +20,13 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
 
     private int mRowIdColumn;
 
-    private DataSetObserver mDataSetObserver;
+    private final DataSetObserver mDataSetObserver;
 
     public CursorRecyclerViewAdapter(Context context, Cursor cursor) {
-        mContext = context;
+        Context mContext = context;
         mCursor = cursor;
         mDataValid = cursor != null;
-        mRowIdColumn = mDataValid ? mCursor.getColumnIndex("titre") : -1;
+        mRowIdColumn = mDataValid ? mCursor.getColumnIndex(PostDataDAO.POST_TITLE) : -1;
         mDataSetObserver = new NotifyingDataSetObserver();
         if (mCursor != null) {
             mCursor.registerDataSetObserver(mDataSetObserver);
@@ -53,6 +53,16 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         return 0;
     }
 
+    public Cursor getItem(final int position)
+    {
+        if (this.mCursor != null && !this.mCursor.isClosed())
+        {
+            this.mCursor.moveToPosition(position);
+        }
+
+        return this.mCursor;
+    }
+
     @Override
     public void setHasStableIds(boolean hasStableIds) {
         super.setHasStableIds(true);
@@ -62,13 +72,8 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(VH viewHolder, int position) {
-        if (!mDataValid) {
-            throw new IllegalStateException("this should only be called when the cursor is valid");
-        }
-        if (!mCursor.moveToPosition(position)) {
-            throw new IllegalStateException("couldn't move cursor to position " + position);
-        }
-        onBindViewHolder(viewHolder, mCursor);
+        Cursor cursor = getItem(position);
+        onBindViewHolder(viewHolder, cursor);
     }
 
     /**
@@ -100,7 +105,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
             if (mDataSetObserver != null) {
                 mCursor.registerDataSetObserver(mDataSetObserver);
             }
-            mRowIdColumn = newCursor.getColumnIndexOrThrow("titre");
+            mRowIdColumn = newCursor.getColumnIndexOrThrow(PostDataDAO.POST_TITLE);
             mDataValid = true;
             notifyDataSetChanged();
         } else {
