@@ -1,6 +1,5 @@
 package com.example.souleman.rssreader;
 
-import android.database.Cursor;
 import android.view.View;
 
 /**
@@ -8,7 +7,4 @@ import android.view.View;
  */
 public interface RecyclerViewInterface {
     int GetRecyclerViewPosition(View v);
-    PostData GetSelectedPostData(int position);
-    Cursor getMyCursor();
-
 }

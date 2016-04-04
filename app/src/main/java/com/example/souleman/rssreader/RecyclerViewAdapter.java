@@ -2,7 +2,6 @@ package com.example.souleman.rssreader;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,14 +57,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Context context = v.getContext();
 
                 int position = listener.GetRecyclerViewPosition(v);
-                PostData postData = listener.GetSelectedPostData(position);
+                // PostData postData = listener.GetSelectedPostData(position);
 
-                Intent postViewdetails = new Intent(context, PostDetails.class);
-                postViewdetails.putExtra(PostDetails.EXTRA_TITRE, postData.getTitre());
-                postViewdetails.putExtra(PostDetails.EXTRA_DATE, postData.getDate());
-                postViewdetails.putExtra(PostDetails.EXTRA_DESCRIPTION, postData.getDescription());
-                postViewdetails.putExtra(PostDetails.EXTRA_IMAGE, postData.getImage());
-                context.startActivity(postViewdetails);
+                // Intent postViewdetails = new Intent(context, PostDetails.class);
+                // postViewdetails.putExtra(PostDetails.EXTRA_TITRE, postData.getTitre());
+                // postViewdetails.putExtra(PostDetails.EXTRA_DATE, postData.getDate());
+                // postViewdetails.putExtra(PostDetails.EXTRA_DESCRIPTION, postData.getDescription());
+                // postViewdetails.putExtra(PostDetails.EXTRA_IMAGE, postData.getImage());
+                // context.startActivity(postViewdetails);
             }
         });
 

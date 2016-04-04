@@ -9,7 +9,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 public class MyActivity  extends Activity  implements LoaderManager.LoaderCallbacks<Cursor> {
     MyListCursorAdapter mCursorAdapter;
     private static final int LOADER_SEARCH_RESULTS = 0;
-    private Cursor mCursor;
     private Context mContext;
     private final String URL = "http://feeds.feedburner.com/elise/simplyrecipes";
     private RecyclerView mRecyclerView;
@@ -33,7 +31,6 @@ public class MyActivity  extends Activity  implements LoaderManager.LoaderCallba
         mContext = this;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,27 +40,15 @@ public class MyActivity  extends Activity  implements LoaderManager.LoaderCallba
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
         RecyclerViewInterface mRVI = new RecyclerViewInterface() {
             @Override
             public int GetRecyclerViewPosition(View v) {
                 return mRecyclerView.getChildAdapterPosition(v);
             }
-
-            @Override
-            public PostData GetSelectedPostData(int position) {
-                mCursor.getString(position);
-                return mListData.get(position);
-            }
-
-            @Override
-            public Cursor getMyCursor() {
-                return mCursor;
-            }
         };
         getLoaderManager().initLoader(LOADER_SEARCH_RESULTS, null, this);
 
-        mCursorAdapter = new MyListCursorAdapter(this, mCursor, mRVI);
+        mCursorAdapter = new MyListCursorAdapter(this, null, mRVI);
         mRecyclerView.setAdapter(mCursorAdapter);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) this.findViewById(R.id.swipeRefreshLayout);
@@ -132,9 +117,7 @@ public class MyActivity  extends Activity  implements LoaderManager.LoaderCallba
             content.put(PostDataDAO.POST_IMG, result.get(i).getImage());
             getContentResolver().insert(MyContentProvider.CONTENT_URI,content);
         }
-
-      mCursor = getContentResolver().query(MyContentProvider.CONTENT_URI,POSTDATA_SUMMARY_PROJECTION,null,null,null);
-      mCursorAdapter.swapCursor(mCursor);
+        getLoaderManager().restartLoader(LOADER_SEARCH_RESULTS,null,this);
     }
 
     // These are the Contacts rows that we will retrieve.
@@ -147,22 +130,19 @@ public class MyActivity  extends Activity  implements LoaderManager.LoaderCallba
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = MyContentProvider.CONTENT_URI;
-
         return new CursorLoader(
                 mContext,                           // Parent activity context
-                uri ,                              // Table to query
-                POSTDATA_SUMMARY_PROJECTION,     // Projection to return
-                null,            // No selection clause
-                null,            // No selection arguments
-                null             // Default sort order
+                MyContentProvider.CONTENT_URI,      // Table to query
+                POSTDATA_SUMMARY_PROJECTION,        // Projection to return
+                null,                               // No selection clause
+                null,                               // No selection arguments
+                null                                // Default sort order
             );
         }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCursor = data;
-        mCursorAdapter.swapCursor(data);
+       mCursorAdapter.swapCursor(data);
     }
 
     @Override

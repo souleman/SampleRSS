@@ -25,7 +25,6 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
     public MyListCursorAdapter(Context context, Cursor cursor, RecyclerViewInterface mRVI){
         super(context,cursor);
         this.listener = mRVI;
-        this.cursor = cursor;
         this.myContext = (Activity) context;
 
     }
@@ -36,9 +35,8 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         Context context = v.getContext();
 
         int position = listener.GetRecyclerViewPosition(v);
-        cursor = listener.getMyCursor();
-
-         cursor.moveToPosition(position);
+        cursor = this.getCursor();
+        cursor.moveToPosition(position);
 
         PostData postData = new PostData();
         postData.setTitre(cursor.getString(cursor.getColumnIndexOrThrow("titre")));
