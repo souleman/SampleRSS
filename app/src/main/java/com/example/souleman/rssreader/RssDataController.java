@@ -37,6 +37,7 @@ public class RssDataController extends AsyncTask< String, Integer, ArrayList<Pos
     @Override
     protected ArrayList<PostData> doInBackground(String... params)
     {
+        //Pourquoi mettre les données dans une arrayList tu as une base de donnée
         ArrayList<PostData> StreamRSS = new ArrayList<PostData>();
         HttpURLConnection urlConnection = null;
         URL url;
@@ -86,6 +87,42 @@ public class RssDataController extends AsyncTask< String, Integer, ArrayList<Pos
                 }
                 StreamRSS.add(rss);
             }
+
+
+            //Ca fait longtemps que je ne parce plus les objets moi meme mais ca devrait resembler a ceci
+//            int eventType = xpp.getEventType();
+//            Article feed = null;
+//
+//            while (eventType != XmlPullParser.END_DOCUMENT) {
+//                if (eventType == XmlPullParser.START_TAG) {
+//                    if (xpp.getName().equalsIgnoreCase(TAG_ITEM)) {
+//                        feed = new Article();
+//                    } else if (feed != null ) {
+//                        if (xpp.getName().equalsIgnoreCase(TAG_TITLE)) {
+//                            feed.setTitle(xpp.nextText());
+//                        } else if (xpp.getName().equalsIgnoreCase(TAG_DESCRIPTION)) {
+//                            feed.setDescription(xpp.nextText());
+//                        } else if (xpp.getName().equalsIgnoreCase(TAG_PUB_DATE)) {
+//                            feed.setDate(xpp.nextText());
+//                        } else if (xpp.getName().equalsIgnoreCase(TAG_CONTENT_ENCODED)) {
+//                            feed.setEncodedContent(xpp.nextText());
+//                        }
+//                    }
+//                } else if (eventType == XmlPullParser.END_TAG && xpp.getName().equalsIgnoreCase(TAG_ITEM)) {
+//                    ContentValues values = new ContentValues();
+//
+//                    values.put(ArticleProvider.KEY_TITLE, feed.getTitle());
+//                    values.put(ArticleProvider.KEY_DESCRIPTION, feed.getDescription());
+//                    values.put(ArticleProvider.KEY_PUB_DATE, Utils.dateToString(feed.getDate()));
+//                    values.put(ArticleProvider.KEY_CONTENT, feed.getEncodedContent());
+//                    values.put(ArticleProvider.KEY_IMAGE_URL, feed.getImageUrl());
+//
+//                    mContext.getContentResolver().insert(
+//                            ArticleProvider.CONTENT_URI, values);
+//                }
+//                eventType = xpp.next();
+//            }
+//            return true;
             in.close();
         }
         catch (MalformedURLException e) {

@@ -22,6 +22,7 @@ public class PostDetails extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_detailled_layout);
 
+        //Tu as la puissance du base de donnée utilise la aulieu de passer tout en bundle
         TextView titre = (TextView) findViewById(R.id.PostTitre);
         TextView date = (TextView) findViewById(R.id.PostDate);
         TextView description = (TextView) findViewById(R.id.PostDescription);
@@ -40,6 +41,7 @@ public class PostDetails extends Activity {
 
         Picasso.with(this).load(postDetailsImage)
                 .error(R.drawable.error)
+                        //inutile
                 .placeholder(Color.WHITE)
                 .into(image);
     }

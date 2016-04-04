@@ -18,7 +18,7 @@ public class MyContentProvider extends ContentProvider {
 
     public static final String AUTHORITY = "com.example.souleman.rssreader.MyContentProvider";
     public static final String TABLE_PATH_PICTURE = PostDataDAO.TABLE_NAME;
-    public static final Uri CONTENT_URI = Uri.parse("content://" +AUTHORITY + "/" +TABLE_PATH_PICTURE);
+    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_PATH_PICTURE);
     public static final String CONTENT_PROVIDER_MIME = "vnd.android.cursor.dir/vnd.com.example.souleman.rssreader";
 
     private final static int CONTENT_PROVIDER_VERSION = 1;
@@ -29,7 +29,7 @@ public class MyContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        dbHelper = new Databasehandler(getContext(), CONTENT_PROVIDER_NOM_FICHIER, null,CONTENT_PROVIDER_VERSION);
+        dbHelper = new Databasehandler(getContext(), CONTENT_PROVIDER_NOM_FICHIER, null, CONTENT_PROVIDER_VERSION);
         return true;
     }
 
@@ -38,14 +38,15 @@ public class MyContentProvider extends ContentProvider {
         long id = getId(uri);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         if (id < 0) {
-            return  db.query(CONTENT_PROVIDER_TABLE_NAME,
+            return db.query(CONTENT_PROVIDER_TABLE_NAME,
                     projection, selection, selectionArgs, null, null,
                     sortOrder);
         } else {
-            return      db.query(CONTENT_PROVIDER_TABLE_NAME,
+            return db.query(CONTENT_PROVIDER_TABLE_NAME,
                     projection, POST_TITLE + "=" + id, null, null, null,
                     null);
-        }    }
+        }
+    }
 
 
     @Override
@@ -61,7 +62,7 @@ public class MyContentProvider extends ContentProvider {
 
             if (id == -1) {
                 throw new RuntimeException(String.format(
-                        "%s : Failed to insert [%s] for unknown reasons.","RSSReader", values, uri));
+                        "%s : Failed to insert [%s] for unknown reasons.", "RSSReader", values, uri));
             } else {
                 return ContentUris.withAppendedId(uri, id);
             }
@@ -96,7 +97,7 @@ public class MyContentProvider extends ContentProvider {
 
         try {
             if (id < 0)
-                return db.update(CONTENT_PROVIDER_TABLE_NAME,values, selection, selectionArgs);
+                return db.update(CONTENT_PROVIDER_TABLE_NAME, values, selection, selectionArgs);
             else
                 return db.update(CONTENT_PROVIDER_TABLE_NAME,
                         values, POST_KEY + "=" + id, null);
@@ -105,17 +106,18 @@ public class MyContentProvider extends ContentProvider {
         }
     }
 
-    public long getId(Uri ContentUri){
-            String lastPathSegment = ContentUri.getLastPathSegment();
-            if (lastPathSegment != null) {
-                try {
-                    return Long.parseLong(lastPathSegment);
-                } catch (NumberFormatException e) {
-                    Log.e("RssReader", "Number Format Exception : " + e);
-                }
+    //pas bon de faire un try catch surtout un NumberFormatException. regarde l'exemple mais en enlever le try catch car finalement il n'y passe jamais alors que toi oui https://gitlab.com/rafoufoun/ProviderDelegate/blob/master/example/src/main/java/world/rafoufoun/providerdelegate/example/database/delegate/example/ExampleDelegate.java
+    public long getId(Uri ContentUri) {
+        String lastPathSegment = ContentUri.getLastPathSegment();
+        if (lastPathSegment != null) {
+            try {
+                return Long.parseLong(lastPathSegment);
+            } catch (NumberFormatException e) {
+                Log.e("RssReader", "Number Format Exception : " + e);
             }
-            return -1;
         }
+        return -1;
+    }
 
 }
 

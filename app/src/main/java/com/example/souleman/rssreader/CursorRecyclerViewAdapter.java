@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 
 public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
+    //inutile
     private Context mContext;
 
     private Cursor mCursor;
@@ -33,6 +34,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         }
     }
 
+    //inutile
     public Cursor getCursor() {
         return mCursor;
     }
@@ -75,6 +77,8 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         Cursor cursor = getItem(position);
         onBindViewHolder(viewHolder, cursor);
     }
+
+    //inutile
 
     /**
      * Change the underlying cursor to a new cursor. If there is an existing cursor it will be

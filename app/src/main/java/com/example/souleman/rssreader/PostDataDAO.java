@@ -13,6 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by Souleman on 04/03/2016.
  */
+//inutile
 public class PostDataDAO {
 
 
@@ -46,11 +47,11 @@ public class PostDataDAO {
     public PostDataDAO(Context context) {
         handler = new Databasehandler(context, NOM_FICHIER, null, VERSION);
     }
-
+    //inutile
     public  void openForWrite() {
         bdd = handler.getWritableDatabase();
     }
-
+    //inutile
     public  void openForRead() {
         bdd = handler.getReadableDatabase();
     }
@@ -59,16 +60,16 @@ public class PostDataDAO {
         bdd = handler.getWritableDatabase();
         return bdd;
     }
-
+    //inutile
     public void close() {
         bdd.close();
     }
-
+    //inutile
     public SQLiteDatabase getDB() {
         return bdd;
     }
 
-
+    //inutile
     public void add(ArrayList<PostData> postdata) {
         delete();
 
@@ -81,7 +82,7 @@ public class PostDataDAO {
             bdd.insert(TABLE_NAME, null, content);
         }
     }
-
+    //inutile
     public PostData cursorToPostData(Cursor c){
         if(c.getCount() == 0){
             c.close();
@@ -101,7 +102,7 @@ public class PostDataDAO {
 
             bdd.delete(TABLE_NAME, null, null);
     }
-
+    //inutile
     public ArrayList<PostData> GetAllPostData() {
         ArrayList<PostData> postDataList = new ArrayList<PostData>();
 
@@ -120,7 +121,7 @@ public class PostDataDAO {
         c.close();
         return postDataList;
     }
-
+    //inutile
     private class addAsyncTask extends AsyncTask<ArrayList<PostData>, Integer,Boolean> {
         @Override
         protected Boolean doInBackground(ArrayList<PostData>... params) {
@@ -136,7 +137,7 @@ public class PostDataDAO {
             return true;
         }
     }
-
+    //inutile
     private long getId(Uri uri) {
         String lastPathSegment = uri.getLastPathSegment();
         if (lastPathSegment != null) {
