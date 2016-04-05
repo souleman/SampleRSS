@@ -1,7 +1,5 @@
 package com.example.souleman.rssreader;
 
-import android.view.View;
-
 import java.util.ArrayList;
 
 /**

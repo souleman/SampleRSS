@@ -16,46 +16,27 @@ import com.squareup.picasso.Picasso;
 /**
  * Created by Souleman on 24/03/2016.
  */
-public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorAdapter.ViewHolder> implements  View.OnClickListener{
+public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorAdapter.ViewHolder> implements View.OnClickListener {
     private Activity myContext;
-    private Cursor cursor;
     private RecyclerViewInterface listener;
-    private OnItemClickListener onItemClickListener;
 
-    public MyListCursorAdapter(Context context, RecyclerViewInterface mRVI){
+    public MyListCursorAdapter(Context context, RecyclerViewInterface mRVI) {
         super(context, null);
         this.listener = mRVI;
         this.myContext = (Activity) context;
     }
 
-    public void setOnItemClickListener(final OnItemClickListener onItemClickListener)
-    {
-        this.onItemClickListener = onItemClickListener;
-    }
-
     @Override
-    public void onClick(final View v)
-    {
+    public void onClick(final View v) {
         Context context = v.getContext();
         int position = listener.GetRecyclerViewPosition(v);
 
-        if (position != RecyclerView.NO_POSITION)
-        {
+        if (position != RecyclerView.NO_POSITION) {
             final Cursor cursor = this.getItem(position);
-
-            PostData postData = new PostData();
-            postData.setTitre(cursor.getString(cursor.getColumnIndexOrThrow(PostDataDAO.POST_TITLE)));
-            postData.setDate(cursor.getString(cursor.getColumnIndexOrThrow(PostDataDAO.POST_DATE)));
-            postData.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(PostDataDAO.POST_DESCRIPTION)));
-            postData.setImage(cursor.getString(cursor.getColumnIndexOrThrow(PostDataDAO.POST_IMG)));
-
+            int id = cursor.getInt(cursor.getColumnIndex(PostDataDAO.POST_KEY));
             Intent postViewdetails = new Intent(context, PostDetails.class);
-            postViewdetails.putExtra(PostDetails.EXTRA_TITRE, postData.getTitre());
-            postViewdetails.putExtra(PostDetails.EXTRA_DATE, postData.getDate());
-            postViewdetails.putExtra(PostDetails.EXTRA_DESCRIPTION, postData.getDescription());
-            postViewdetails.putExtra(PostDetails.EXTRA_IMAGE, postData.getImage());
+            postViewdetails.putExtra(PostDetails.EXTRA_ID, id);
             context.startActivity(postViewdetails);
-
         }
     }
 
@@ -84,11 +65,10 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
         PostData mPostdata = new PostData();
-
-        mPostdata.setTitre(cursor.getString(cursor.getColumnIndexOrThrow(PostDataDAO.POST_TITLE)));
-        mPostdata.setDate(cursor.getString(cursor.getColumnIndexOrThrow(PostDataDAO.POST_DATE)));
-        mPostdata.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(PostDataDAO.POST_DESCRIPTION)));
-        mPostdata.setImage(cursor.getString(cursor.getColumnIndexOrThrow(PostDataDAO.POST_IMG)));
+        mPostdata.setTitre(cursor.getString(cursor.getColumnIndex(PostDataDAO.POST_TITLE)));
+        mPostdata.setDate(cursor.getString(cursor.getColumnIndex(PostDataDAO.POST_DATE)));
+        mPostdata.setDescription(cursor.getString(cursor.getColumnIndex(PostDataDAO.POST_DESCRIPTION)));
+        mPostdata.setImage(cursor.getString(cursor.getColumnIndex(PostDataDAO.POST_IMG)));
 
         Picasso.with(myContext).load(String.valueOf((mPostdata.getImage())))
                 .error(R.drawable.ic_launcher)
@@ -98,9 +78,4 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         viewHolder.postTitleView.setText(mPostdata.getTitre());
         viewHolder.postDateView.setText(mPostdata.getDate());
     }
-
-    public interface OnItemClickListener
-    {
-        void onItemClicked(Cursor cursor);
-    }
-}
+ }
