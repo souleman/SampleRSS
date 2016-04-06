@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+//Revoir le nom MainActivity ou MyActivity c'est pas très parlant
 public class MyActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private MyListCursorAdapter mCursorAdapter;
@@ -79,6 +80,7 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
                 if (result.size() == 0) {
                     Toast.makeText(mContext, R.string.Loading_Error, Toast.LENGTH_SHORT).show();
                 } else {
+                    //Commentaire à supprimer
                     //getContentResolver().notifyChange(MyContentProvider.CONTENT_URI,null);
                     getLoaderManager().restartLoader(LOADER_SEARCH_RESULTS, null, MyActivity.this);
                 }

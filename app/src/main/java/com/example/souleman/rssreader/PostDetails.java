@@ -21,6 +21,7 @@ public class PostDetails extends Activity implements LoaderManager.LoaderCallbac
     private TextView date;
     private TextView description;
     private ImageView image;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,8 +35,7 @@ public class PostDetails extends Activity implements LoaderManager.LoaderCallbac
         Bundle postDetailsBundle = this.getIntent().getExtras();
         int postDetailsId = postDetailsBundle.getInt(EXTRA_ID);
 
-        getLoaderManager().initLoader(postDetailsId,null,this);
-
+        getLoaderManager().initLoader(postDetailsId, null, this);
 
 
 //        GetCursorFromDataBase myDBCursor = new GetCursorFromDataBase();
@@ -45,7 +45,7 @@ public class PostDetails extends Activity implements LoaderManager.LoaderCallbac
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri = Uri.parse(MyContentProvider.CONTENT_URI_ITEM + "" + id);
-
+        //GetBaseContext et pourquoi pas this ou getApplicationContext ? tu connais la différence ?
         return new CursorLoader(
                 getBaseContext(),                   // Parent activity context
                 uri,      // Table to query
@@ -60,9 +60,10 @@ public class PostDetails extends Activity implements LoaderManager.LoaderCallbac
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
         c.moveToFirst();
         String postDetailsTitre = c.getString(c.getColumnIndex(PostDataDAO.POST_TITLE));
-        String postDetailsDate =  c.getString(c.getColumnIndex(PostDataDAO.POST_DATE));
-        String postDetailsDescription =  c.getString(c.getColumnIndex(PostDataDAO.POST_DESCRIPTION));
-        String postDetailsImage =  c.getString(c.getColumnIndex(PostDataDAO.POST_IMG));
+        String postDetailsDate = c.getString(c.getColumnIndex(PostDataDAO.POST_DATE));
+        String postDetailsDescription = c.getString(c.getColumnIndex(PostDataDAO.POST_DESCRIPTION));
+        String postDetailsImage = c.getString(c.getColumnIndex(PostDataDAO.POST_IMG));
+        //c'est toi qui a créer le cursor ? Renseigne toi sur le CursorLoader
         c.close();
 
         titre.setText(postDetailsTitre);
@@ -72,13 +73,13 @@ public class PostDetails extends Activity implements LoaderManager.LoaderCallbac
         Picasso.with(this).load(postDetailsImage)
                 .error(R.drawable.error)
                 .into(image);
-   }
+    }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
     }
 
-
+//N oublie pas de supprimer tout les codes mort et inutile.
 /*
     private class GetCursorFromDataBase extends AsyncTask<Uri,Integer, String []>
     {

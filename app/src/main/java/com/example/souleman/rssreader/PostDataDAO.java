@@ -7,9 +7,10 @@ import android.net.Uri;
 /**
  * Created by Souleman on 04/03/2016.
  */
-//inutile
+//inutile tu confond table et DAO
 public class PostDataDAO {
     // URI de notre content provider, elle sera utilisé pour accéder au ContentProvider
+    //Non utilisié
     public static final Uri CONTENT_URI = Uri.parse("content://com.example.souleman.rssreader.postDatabase");
 
     // Version de notre base de données
@@ -29,9 +30,11 @@ public class PostDataDAO {
     private Databasehandler handler = null;
 
     public PostDataDAO(Context context) {
+        //Si je sais bien compter tu as fais 2 accès a ta base.
         handler = new Databasehandler(context, NOM_FICHIER, null, VERSION);
     }
 
+    //Jamais utilisé
     public SQLiteDatabase open() {
         bdd = handler.getWritableDatabase();
         return bdd;

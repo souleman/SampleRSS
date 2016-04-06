@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
  * Created by Souleman on 04/03/2016.
  */
+//Pourquoi Handler ? et si c'est le bon nom c'est plus DatabaseHandler
 public class Databasehandler extends SQLiteOpenHelper {
 
     private static final String POST_TABLE_NAME = "Postdatabase";

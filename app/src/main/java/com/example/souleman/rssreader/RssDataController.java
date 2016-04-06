@@ -22,12 +22,10 @@ import javax.xml.parsers.ParserConfigurationException;
 /**
  * Created by Souleman on 09/02/2016.
  */
-public class RssDataController extends AsyncTask< Context, Integer, ArrayList<PostData>>
-{
+public class RssDataController extends AsyncTask<Context, Integer, ArrayList<PostData>> {
     private OnTaskCompleted listener;
 
-    public RssDataController(OnTaskCompleted listener)
-    {
+    public RssDataController(OnTaskCompleted listener) {
         this.listener = listener;
     }
 
@@ -42,19 +40,18 @@ public class RssDataController extends AsyncTask< Context, Integer, ArrayList<Po
     }
 
     @Override
-    protected ArrayList<PostData> doInBackground(Context...contexts)
-    {
+    protected ArrayList<PostData> doInBackground(Context... contexts) {
         final String URL = "http://feeds.feedburner.com/elise/simplyrecipes";
 
         //Pourquoi mettre les données dans une arrayList tu as une base de donnée
+        //Attention lis ce que tu dis Android Studio sur cette ligne
         ArrayList<PostData> StreamRSS = new ArrayList<PostData>();
         HttpURLConnection urlConnection = null;
 
         URL url;
         Context mContext = contexts[0];
 
-        try
-        {
+        try {
             mContext.getContentResolver().delete(MyContentProvider.CONTENT_URI, null, null);
             url = new URL(URL);
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -70,12 +67,13 @@ public class RssDataController extends AsyncTask< Context, Integer, ArrayList<Po
             int cleanCounter1 = doc.getElementsByTagName("item").getLength();
             for (int i = 0; i < cleanCounter1; i++) {
                 PostData rss = new PostData();
-                rss.setId(i+1);
+                rss.setId(i + 1);
 
                 int cleanCounter2 = doc.getElementsByTagName("item").item(i).getChildNodes().getLength();
                 for (int j = 0; j < cleanCounter2; j++) {
-                    if(doc.getElementsByTagName("item").item(i).getChildNodes().item(j).getNodeName() != null) {
+                    if (doc.getElementsByTagName("item").item(i).getChildNodes().item(j).getNodeName() != null) {
                         String s = doc.getElementsByTagName("item").item(i).getChildNodes().item(j).getNodeName();
+                        //tu peux faire un switch et attention tu caste doc en Document sur chaque ligne.
                         if (s.equals("title")) {
                             rss.setTitre(((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent());
 
@@ -146,19 +144,16 @@ public class RssDataController extends AsyncTask< Context, Integer, ArrayList<Po
             in.close();
 
         }
+        //Tu traite de la meme manière les catchs c'est utile ?
         catch (MalformedURLException e) {
             e.printStackTrace();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        catch (ParserConfigurationException e) {
+        } catch (ParserConfigurationException e) {
             e.printStackTrace();
-        }
-        catch (SAXException e) {
+        } catch (SAXException e) {
             e.printStackTrace();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             assert urlConnection != null;

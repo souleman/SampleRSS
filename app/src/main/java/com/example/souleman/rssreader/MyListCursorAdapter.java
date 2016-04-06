@@ -16,8 +16,12 @@ import com.squareup.picasso.Picasso;
 /**
  * Created by Souleman on 24/03/2016.
  */
+//Attention au nom
 public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorAdapter.ViewHolder> implements View.OnClickListener {
+    //attention au nom
+    // Doit etre final je suposse
     private Activity myContext;
+    // Doit etre final je suposse
     private RecyclerViewInterface listener;
 
     public MyListCursorAdapter(Context context, RecyclerViewInterface mRVI) {
@@ -41,8 +45,11 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        // Doit etre final je suposse
         TextView postTitleView;
+        // Doit etre final je suposse
         TextView postDateView;
+        // Doit etre final je suposse
         ImageView postImageView;
 
         public ViewHolder(View v) {
@@ -64,12 +71,15 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
+        //Ca sert a rien de faire un objet ici.
         PostData mPostdata = new PostData();
+        //C'est très couteux de récupérer l'index pense a le faire qu'une fois par exemple dans le swapCursor
         mPostdata.setTitre(cursor.getString(cursor.getColumnIndex(PostDataDAO.POST_TITLE)));
         mPostdata.setDate(cursor.getString(cursor.getColumnIndex(PostDataDAO.POST_DATE)));
         mPostdata.setDescription(cursor.getString(cursor.getColumnIndex(PostDataDAO.POST_DESCRIPTION)));
         mPostdata.setImage(cursor.getString(cursor.getColumnIndex(PostDataDAO.POST_IMG)));
 
+        //Attention avec ton placeholder et ton error
         Picasso.with(myContext).load(String.valueOf((mPostdata.getImage())))
                 .error(R.drawable.ic_launcher)
                 .placeholder(R.drawable.ic_launcher)
@@ -78,4 +88,4 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         viewHolder.postTitleView.setText(mPostdata.getTitre());
         viewHolder.postDateView.setText(mPostdata.getDate());
     }
- }
+}
