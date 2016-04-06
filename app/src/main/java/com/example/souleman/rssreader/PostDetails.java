@@ -1,9 +1,11 @@
 package com.example.souleman.rssreader;
 
 import android.app.Activity;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,7 +15,7 @@ import com.squareup.picasso.Picasso;
 /**
  * Created by Souleman on 11/02/2016.
  */
-public class PostDetails extends Activity {
+public class PostDetails extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String EXTRA_ID = "id";
     private TextView titre;
     private TextView date;
@@ -32,15 +34,54 @@ public class PostDetails extends Activity {
         Bundle postDetailsBundle = this.getIntent().getExtras();
         int postDetailsId = postDetailsBundle.getInt(EXTRA_ID);
 
-        Uri uri = Uri.parse(MyContentProvider.CONTENT_URI_ITEM + "" + postDetailsId);
+        getLoaderManager().initLoader(postDetailsId,null,this);
 
 
-        GetCursorFromDataBase myDBCursor = new GetCursorFromDataBase();
-        myDBCursor.execute(uri);
+
+//        GetCursorFromDataBase myDBCursor = new GetCursorFromDataBase();
+//        myDBCursor.execute(uri);
     }
 
-    private class GetCursorFromDataBase extends AsyncTask<Uri,Integer, String []> {
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri uri = Uri.parse(MyContentProvider.CONTENT_URI_ITEM + "" + id);
 
+        return new CursorLoader(
+                getBaseContext(),                   // Parent activity context
+                uri,      // Table to query
+                MyActivity.POSTDATA_SUMMARY_PROJECTION,        // Projection to return
+                null,                               // No selection clause
+                null,                               // No selection arguments
+                null                                // Default sort order
+        );
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
+        c.moveToFirst();
+        String postDetailsTitre = c.getString(c.getColumnIndex(PostDataDAO.POST_TITLE));
+        String postDetailsDate =  c.getString(c.getColumnIndex(PostDataDAO.POST_DATE));
+        String postDetailsDescription =  c.getString(c.getColumnIndex(PostDataDAO.POST_DESCRIPTION));
+        String postDetailsImage =  c.getString(c.getColumnIndex(PostDataDAO.POST_IMG));
+        c.close();
+
+        titre.setText(postDetailsTitre);
+        date.setText(postDetailsDate);
+        description.setText(postDetailsDescription);
+
+        Picasso.with(this).load(postDetailsImage)
+                .error(R.drawable.error)
+                .into(image);
+   }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+
+/*
+    private class GetCursorFromDataBase extends AsyncTask<Uri,Integer, String []>
+    {
         @Override
         protected void onPreExecute() {
         }
@@ -80,4 +121,7 @@ public class PostDetails extends Activity {
                 .error(R.drawable.error)
                 .into(image);
     }
+
+*/
+
 }
