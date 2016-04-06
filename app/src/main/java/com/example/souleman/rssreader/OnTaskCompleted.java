@@ -1,6 +1,4 @@
 package com.example.souleman.rssreader;
-//inutile
-import android.view.View;
 
 import java.util.ArrayList;
 

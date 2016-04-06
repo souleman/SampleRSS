@@ -2,7 +2,6 @@ package com.example.souleman.rssreader;
 
 import android.app.Activity;
 import android.app.LoaderManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -19,10 +18,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MyActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+
     private MyListCursorAdapter mCursorAdapter;
     private static final int LOADER_SEARCH_RESULTS = 0;
     private final Context mContext;
-    private final String URL = "http://feeds.feedburner.com/elise/simplyrecipes";
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -50,11 +49,12 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
         mCursorAdapter = new MyListCursorAdapter(this, mRVI);
         mRecyclerView.setAdapter(mCursorAdapter);
 
+        MyRefreshingFunction();
+
         mSwipeRefreshLayout = (SwipeRefreshLayout) this.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //Si je comprends bien si on fait pas un swipe on aura jamais les données
                 MyRefreshingFunction();
             }
         });
@@ -69,7 +69,7 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
     }
 
     // RSS Reader Function
-    public void ExecuteMyTask() {
+    private void ExecuteMyTask() {
         OnTaskCompleted mCompleted = new OnTaskCompleted() {
             @Override
             public void onTaskCompleted(ArrayList<PostData> result) {
@@ -79,12 +79,13 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
                 if (result.size() == 0) {
                     Toast.makeText(mContext, R.string.Loading_Error, Toast.LENGTH_SHORT).show();
                 } else {
-                    SavePostData(result);
+                    //getContentResolver().notifyChange(MyContentProvider.CONTENT_URI,null);
+                    getLoaderManager().restartLoader(LOADER_SEARCH_RESULTS, null, MyActivity.this);
                 }
             }
         };
         RssDataController geRss = new RssDataController(mCompleted);
-        geRss.execute(URL);
+        geRss.execute(mContext);
     }
 
     private boolean checkInternet() {
@@ -99,24 +100,8 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
         return isConnected;
     }
 
-    // SAVE DATA SHARED PREFERENCE FUNCTION
-    //Rien a faire la tu fais 2 fois la tache et deplus tu travail sur la base sur le UI Thread c'est vraiment pas bon.
-    public void SavePostData(ArrayList<PostData> result) {
-        getContentResolver().delete(MyContentProvider.CONTENT_URI, null, null);
-
-        for (int i = 0; i < result.size(); i++) {
-            ContentValues content = new ContentValues();
-            content.put(PostDataDAO.POST_TITLE, result.get(i).getTitre());
-            content.put(PostDataDAO.POST_DATE, result.get(i).getDate());
-            content.put(PostDataDAO.POST_DESCRIPTION, result.get(i).getDescription());
-            content.put(PostDataDAO.POST_IMG, result.get(i).getImage());
-            getContentResolver().insert(MyContentProvider.CONTENT_URI, content);
-        }
-        getLoaderManager().restartLoader(LOADER_SEARCH_RESULTS, null, this);
-    }
-
-    // These are the Contacts rows that we will retrieve.
     static final String[] POSTDATA_SUMMARY_PROJECTION = new String[]{
+            PostDataDAO.POST_KEY,
             PostDataDAO.POST_TITLE,
             PostDataDAO.POST_DESCRIPTION,
             PostDataDAO.POST_DATE,
