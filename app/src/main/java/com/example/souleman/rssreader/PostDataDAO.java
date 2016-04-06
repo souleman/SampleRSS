@@ -2,16 +2,11 @@ package com.example.souleman.rssreader;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 
 /**
  * Created by Souleman on 04/03/2016.
  */
-//inutile
 public class PostDataDAO {
-    // URI de notre content provider, elle sera utilisé pour accéder au ContentProvider
-    public static final Uri CONTENT_URI = Uri.parse("content://com.example.souleman.rssreader.postDatabase");
-
     // Version de notre base de données
     private final static int VERSION = 1;
     // Nom de notre base de données
