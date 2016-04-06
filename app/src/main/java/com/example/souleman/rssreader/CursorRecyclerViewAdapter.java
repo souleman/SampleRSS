@@ -17,7 +17,9 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
     private int mRowIdColumn;
     private final DataSetObserver mDataSetObserver;
 
+    //Context n'est pas utilisé
     public CursorRecyclerViewAdapter(Context context, Cursor cursor) {
+        //Je suppose fortement que Cursor est toujours null peut etre a supprimer non?
         mCursor = cursor;
         mDataValid = cursor != null;
         mRowIdColumn = mDataValid ? mCursor.getColumnIndex(PostDataDAO.POST_TITLE) : -1;
@@ -44,10 +46,8 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         return 0;
     }
 
-    public Cursor getItem(final int position)
-    {
-        if (this.mCursor != null && !this.mCursor.isClosed())
-        {
+    public Cursor getItem(final int position) {
+        if (this.mCursor != null && !this.mCursor.isClosed()) {
             this.mCursor.moveToPosition(position);
         }
 
@@ -67,6 +67,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         onBindViewHolder(viewHolder, cursor);
     }
 
+    //Tu utilise le cursor que tu retourne ?
     public Cursor swapCursor(Cursor newCursor) {
         if (newCursor == mCursor) {
             return null;

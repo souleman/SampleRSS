@@ -2,13 +2,13 @@
 <resources>
 
     <string name="app_name">RssReader</string>
+    <!-- attention tu ne l'utilise pas -->
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+    <!-- remplace le ... par son code UTF8 -->
     <string name="NetWork_Missing">NetWork Connection missing...</string>
     <string name="Loading_Error">Loading error ...</string>
     <string name="Make_Connexion_ON">Please make sur the Connexion is ON</string>
-
 
 
 </resources>
