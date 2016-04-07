@@ -44,12 +44,20 @@ public class PostDetails extends Activity implements LoaderManager.LoaderCallbac
         return new CursorLoader(
                 getApplicationContext(),                    // Parent activity context
                 uri,                                        // Table to query
-                MyActivity.POSTDATA_SUMMARY_PROJECTION,     // Projection to return
+                POSTDATA_DETAILS_PROJECTION,                // Projection to return
                 null,                                       // No selection clause
                 null,                                       // No selection arguments
                 null                                        // Default sort order
         );
     }
+
+    static final String[] POSTDATA_DETAILS_PROJECTION = new String[]{
+            Database.POST_TITLE,
+            Database.POST_DESCRIPTION,
+            Database.POST_DATE,
+            Database.POST_IMG,
+    };
+
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {

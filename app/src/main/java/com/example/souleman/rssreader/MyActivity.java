@@ -100,9 +100,7 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
     }
 
     static final String[] POSTDATA_SUMMARY_PROJECTION = new String[]{
-            Database.POST_KEY,
             Database.POST_TITLE,
-            Database.POST_DESCRIPTION,
             Database.POST_DATE,
             Database.POST_IMG,
     };
