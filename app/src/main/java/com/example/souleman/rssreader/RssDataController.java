@@ -23,6 +23,12 @@ import javax.xml.parsers.ParserConfigurationException;
  * Created by Souleman on 09/02/2016.
  */
 public class RssDataController extends AsyncTask<Context, Integer, ArrayList<PostData>> {
+    public static final String TITLE = "title";
+    public static final String PUBDATE = "pubDate";
+    public static final String DESCRIPTION = "description";
+    public static final String ITEM = "item";
+
+
     private final OnTaskCompleted listener;
 
     public RssDataController(OnTaskCompleted listener) {
@@ -62,36 +68,36 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
             urlConnection.setReadTimeout(30 * 1000); // 10 sec
             urlConnection.setConnectTimeout(30 * 1000); // 10 sec
 
-            int cleanCounter1 = doc.getElementsByTagName("item").getLength();
+            int cleanCounter1 = doc.getElementsByTagName(ITEM).getLength();
             for (int i = 0; i < cleanCounter1; i++) {
                 PostData rss = new PostData();
                 rss.setId(i + 1);
 
-                int cleanCounter2 = doc.getElementsByTagName("item").item(i).getChildNodes().getLength();
+                int cleanCounter2 = doc.getElementsByTagName(ITEM).item(i).getChildNodes().getLength();
                 for (int j = 0; j < cleanCounter2; j++) {
-                    if (doc.getElementsByTagName("item").item(i).getChildNodes().item(j).getNodeName() != null) {
-                        String s = doc.getElementsByTagName("item").item(i).getChildNodes().item(j).getNodeName();
+                    if (doc.getElementsByTagName(ITEM).item(i).getChildNodes().item(j).getNodeName() != null) {
+                        String s = doc.getElementsByTagName(ITEM).item(i).getChildNodes().item(j).getNodeName();
                         Document document = ((Document) doc);
                         switch (s) {
-                            case "title":
-                                rss.setTitre(document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent());
+                            case TITLE:
+                                rss.setTitre(document.getElementsByTagName(ITEM).item(i).getChildNodes().item(j).getTextContent());
 
                                 break;
-                            case "pubDate":
-                                rss.setDate(document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent());
+                            case PUBDATE:
+                                rss.setDate(document.getElementsByTagName(ITEM).item(i).getChildNodes().item(j).getTextContent());
                                 break;
 
                             // Description et images
-                            case "description":
-                                int start = document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("<p>");
-                                int end = document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("<", start + 3);
-                                rss.setDescription(document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().substring(start + 3, end));
+                            case DESCRIPTION:
+                                int start = document.getElementsByTagName(ITEM).item(i).getChildNodes().item(j).getTextContent().indexOf("<p>");
+                                int end = document.getElementsByTagName(ITEM).item(i).getChildNodes().item(j).getTextContent().indexOf("<", start + 3);
+                                rss.setDescription(document.getElementsByTagName(ITEM).item(i).getChildNodes().item(j).getTextContent().substring(start + 3, end));
 
                                 //pour l'image on réutilise les variable start et end
-                                start = document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("src=\"");
-                                end = document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("class=\"");
+                                start = document.getElementsByTagName(ITEM).item(i).getChildNodes().item(j).getTextContent().indexOf("src=\"");
+                                end = document.getElementsByTagName(ITEM).item(i).getChildNodes().item(j).getTextContent().indexOf("class=\"");
 
-                                rss.setImage(document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().substring(start + 5, end - 2));
+                                rss.setImage(document.getElementsByTagName(ITEM).item(i).getChildNodes().item(j).getTextContent().substring(start + 5, end - 2));
                                 break;
                         }
                     }
