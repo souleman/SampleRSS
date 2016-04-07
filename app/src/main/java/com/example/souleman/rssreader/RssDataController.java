@@ -23,7 +23,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * Created by Souleman on 09/02/2016.
  */
 public class RssDataController extends AsyncTask<Context, Integer, ArrayList<PostData>> {
-    private OnTaskCompleted listener;
+    private final OnTaskCompleted listener;
 
     public RssDataController(OnTaskCompleted listener) {
         this.listener = listener;
@@ -43,16 +43,14 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
     protected ArrayList<PostData> doInBackground(Context... contexts) {
         final String URL = "http://feeds.feedburner.com/elise/simplyrecipes";
 
-        //Pourquoi mettre les données dans une arrayList tu as une base de donnée
-        //Attention lis ce que tu dis Android Studio sur cette ligne
-        ArrayList<PostData> StreamRSS = new ArrayList<PostData>();
+        ArrayList<PostData> StreamRSS = new ArrayList<>();
         HttpURLConnection urlConnection = null;
 
         URL url;
         Context mContext = contexts[0];
 
         try {
-            mContext.getContentResolver().delete(MyContentProvider.CONTENT_URI, null, null);
+            mContext.getContentResolver().delete(Contract.CONTENT_URI, null, null);
             url = new URL(URL);
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
@@ -73,39 +71,42 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
                 for (int j = 0; j < cleanCounter2; j++) {
                     if (doc.getElementsByTagName("item").item(i).getChildNodes().item(j).getNodeName() != null) {
                         String s = doc.getElementsByTagName("item").item(i).getChildNodes().item(j).getNodeName();
-                        //tu peux faire un switch et attention tu caste doc en Document sur chaque ligne.
-                        if (s.equals("title")) {
-                            rss.setTitre(((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent());
+                        Document document = ((Document) doc);
+                        switch (s) {
+                            case "title":
+                                rss.setTitre(document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent());
 
-                        } else if (s.equals("pubDate")) {
-                            rss.setDate(((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent());
+                                break;
+                            case "pubDate":
+                                rss.setDate(document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent());
+                                break;
 
                             // Description et images
-                        } else if (s.equals("description")) {
-                            int start = ((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("<p>");
-                            int end = ((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("<", start + 3);
-                            rss.setDescription(((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().substring(start + 3, end));
+                            case "description":
+                                int start = document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("<p>");
+                                int end = document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("<", start + 3);
+                                rss.setDescription(document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().substring(start + 3, end));
 
-                            //pour l'image on réutilise les variable start et end
-                            start = ((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("src=\"");
-                            end = ((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("class=\"");
+                                //pour l'image on réutilise les variable start et end
+                                start = document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("src=\"");
+                                end = document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().indexOf("class=\"");
 
-                            rss.setImage(((Document) doc).getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().substring(start + 5, end - 2));
+                                rss.setImage(document.getElementsByTagName("item").item(i).getChildNodes().item(j).getTextContent().substring(start + 5, end - 2));
+                                break;
                         }
                     }
                 }
 
                 ContentValues content = new ContentValues();
-                content.put(PostDataDAO.POST_KEY, rss.getId());
-                content.put(PostDataDAO.POST_TITLE, rss.getTitre());
-                content.put(PostDataDAO.POST_DATE, rss.getDate());
-                content.put(PostDataDAO.POST_DESCRIPTION, rss.getDescription());
-                content.put(PostDataDAO.POST_IMG, rss.getImage());
-                mContext.getContentResolver().insert(MyContentProvider.CONTENT_URI, content);
+                content.put(Database.POST_KEY, rss.getId());
+                content.put(Database.POST_TITLE, rss.getTitre());
+                content.put(Database.POST_DATE, rss.getDate());
+                content.put(Database.POST_DESCRIPTION, rss.getDescription());
+                content.put(Database.POST_IMG, rss.getImage());
+                mContext.getContentResolver().insert(Contract.CONTENT_URI, content);
 
                 StreamRSS.add(rss);
             }
-
 
             //Ca fait longtemps que je ne parce plus les objets moi meme mais ca devrait resembler a ceci
 //            int eventType = xpp.getEventType();
@@ -144,8 +145,10 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
             in.close();
 
         }
+
         //Tu traite de la meme manière les catchs c'est utile ?
         catch (MalformedURLException e) {
+            e.printStackTrace();
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -161,6 +164,4 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
         }
         return StreamRSS;
     }
-
-
 }

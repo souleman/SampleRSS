@@ -18,16 +18,13 @@ import com.squareup.picasso.Picasso;
  */
 //Attention au nom
 public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorAdapter.ViewHolder> implements View.OnClickListener {
-    //attention au nom
-    // Doit etre final je suposse
-    private Activity myContext;
-    // Doit etre final je suposse
-    private RecyclerViewInterface listener;
+    private final Activity myActivity;
+    private final RecyclerViewInterface listener;
 
     public MyListCursorAdapter(Context context, RecyclerViewInterface mRVI) {
-        super(context, null);
+        super(null);
         this.listener = mRVI;
-        this.myContext = (Activity) context;
+        this.myActivity = (Activity) context;
     }
 
     @Override
@@ -37,7 +34,7 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
 
         if (position != RecyclerView.NO_POSITION) {
             final Cursor cursor = this.getItem(position);
-            int id = cursor.getInt(cursor.getColumnIndex(PostDataDAO.POST_KEY));
+            int id = cursor.getInt(cursor.getColumnIndex(Database.POST_KEY));
             Intent postViewdetails = new Intent(context, PostDetails.class);
             postViewdetails.putExtra(PostDetails.EXTRA_ID, id);
             context.startActivity(postViewdetails);
@@ -45,12 +42,9 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        // Doit etre final je suposse
-        TextView postTitleView;
-        // Doit etre final je suposse
-        TextView postDateView;
-        // Doit etre final je suposse
-        ImageView postImageView;
+        final TextView postTitleView;
+        final TextView postDateView;
+        final ImageView postImageView;
 
         public ViewHolder(View v) {
             super(v);
@@ -71,21 +65,11 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
-        //Ca sert a rien de faire un objet ici.
-        PostData mPostdata = new PostData();
-        //C'est très couteux de récupérer l'index pense a le faire qu'une fois par exemple dans le swapCursor
-        mPostdata.setTitre(cursor.getString(cursor.getColumnIndex(PostDataDAO.POST_TITLE)));
-        mPostdata.setDate(cursor.getString(cursor.getColumnIndex(PostDataDAO.POST_DATE)));
-        mPostdata.setDescription(cursor.getString(cursor.getColumnIndex(PostDataDAO.POST_DESCRIPTION)));
-        mPostdata.setImage(cursor.getString(cursor.getColumnIndex(PostDataDAO.POST_IMG)));
-
-        //Attention avec ton placeholder et ton error
-        Picasso.with(myContext).load(String.valueOf((mPostdata.getImage())))
-                .error(R.drawable.ic_launcher)
-                .placeholder(R.drawable.ic_launcher)
+        Picasso.with(myActivity).load(String.valueOf((cursor.getString(cursor.getColumnIndex(Database.POST_IMG)))))
+                .error(R.drawable.error)
                 .into(viewHolder.postImageView);
 
-        viewHolder.postTitleView.setText(mPostdata.getTitre());
-        viewHolder.postDateView.setText(mPostdata.getDate());
+        viewHolder.postTitleView.setText(cursor.getString(cursor.getColumnIndex(Database.POST_TITLE)));
+        viewHolder.postDateView.setText(cursor.getString(cursor.getColumnIndex(Database.POST_DATE)));
     }
 }

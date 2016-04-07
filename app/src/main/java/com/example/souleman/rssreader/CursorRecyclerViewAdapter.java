@@ -1,6 +1,5 @@
 package com.example.souleman.rssreader;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
@@ -17,12 +16,10 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
     private int mRowIdColumn;
     private final DataSetObserver mDataSetObserver;
 
-    //Context n'est pas utilisé
-    public CursorRecyclerViewAdapter(Context context, Cursor cursor) {
-        //Je suppose fortement que Cursor est toujours null peut etre a supprimer non?
+    public CursorRecyclerViewAdapter(Cursor cursor) {
         mCursor = cursor;
         mDataValid = cursor != null;
-        mRowIdColumn = mDataValid ? mCursor.getColumnIndex(PostDataDAO.POST_TITLE) : -1;
+        mRowIdColumn = mDataValid ? mCursor.getColumnIndex(Database.POST_TITLE) : -1;
         mDataSetObserver = new NotifyingDataSetObserver();
         if (mCursor != null) {
             mCursor.registerDataSetObserver(mDataSetObserver);
@@ -67,10 +64,8 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         onBindViewHolder(viewHolder, cursor);
     }
 
-    //Tu utilise le cursor que tu retourne ?
-    public Cursor swapCursor(Cursor newCursor) {
+    public void swapCursor(Cursor newCursor) {
         if (newCursor == mCursor) {
-            return null;
         }
         final Cursor oldCursor = mCursor;
         if (oldCursor != null && mDataSetObserver != null) {
@@ -81,7 +76,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
             if (mDataSetObserver != null) {
                 mCursor.registerDataSetObserver(mDataSetObserver);
             }
-            mRowIdColumn = newCursor.getColumnIndexOrThrow(PostDataDAO.POST_TITLE);
+            mRowIdColumn = newCursor.getColumnIndexOrThrow(Database.POST_TITLE);
             mDataValid = true;
             notifyDataSetChanged();
         } else {
@@ -89,8 +84,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
             mDataValid = false;
             notifyDataSetChanged();
         }
-        return oldCursor;
-    }
+       }
 
     private class NotifyingDataSetObserver extends DataSetObserver {
         @Override

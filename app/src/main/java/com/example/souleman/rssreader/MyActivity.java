@@ -16,8 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-
-//Revoir le nom MainActivity ou MyActivity c'est pas très parlant
+// CHANGER LE NOM MyActivity pas top
 public class MyActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private MyListCursorAdapter mCursorAdapter;
@@ -80,8 +79,6 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
                 if (result.size() == 0) {
                     Toast.makeText(mContext, R.string.Loading_Error, Toast.LENGTH_SHORT).show();
                 } else {
-                    //Commentaire à supprimer
-                    //getContentResolver().notifyChange(MyContentProvider.CONTENT_URI,null);
                     getLoaderManager().restartLoader(LOADER_SEARCH_RESULTS, null, MyActivity.this);
                 }
             }
@@ -103,18 +100,18 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
     }
 
     static final String[] POSTDATA_SUMMARY_PROJECTION = new String[]{
-            PostDataDAO.POST_KEY,
-            PostDataDAO.POST_TITLE,
-            PostDataDAO.POST_DESCRIPTION,
-            PostDataDAO.POST_DATE,
-            PostDataDAO.POST_IMG,
+            Database.POST_KEY,
+            Database.POST_TITLE,
+            Database.POST_DESCRIPTION,
+            Database.POST_DATE,
+            Database.POST_IMG,
     };
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(
                 mContext,                           // Parent activity context
-                MyContentProvider.CONTENT_URI,      // Table to query
+                Contract.CONTENT_URI,               // Table to query
                 POSTDATA_SUMMARY_PROJECTION,        // Projection to return
                 null,                               // No selection clause
                 null,                               // No selection arguments

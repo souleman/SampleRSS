@@ -36,35 +36,28 @@ public class PostDetails extends Activity implements LoaderManager.LoaderCallbac
         int postDetailsId = postDetailsBundle.getInt(EXTRA_ID);
 
         getLoaderManager().initLoader(postDetailsId, null, this);
-
-
-//        GetCursorFromDataBase myDBCursor = new GetCursorFromDataBase();
-//        myDBCursor.execute(uri);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = Uri.parse(MyContentProvider.CONTENT_URI_ITEM + "" + id);
-        //GetBaseContext et pourquoi pas this ou getApplicationContext ? tu connais la différence ?
+        Uri uri = Uri.parse(Contract.CONTENT_URI_ITEM + "" + id);
         return new CursorLoader(
-                getBaseContext(),                   // Parent activity context
-                uri,      // Table to query
-                MyActivity.POSTDATA_SUMMARY_PROJECTION,        // Projection to return
-                null,                               // No selection clause
-                null,                               // No selection arguments
-                null                                // Default sort order
+                getApplicationContext(),                    // Parent activity context
+                uri,                                        // Table to query
+                MyActivity.POSTDATA_SUMMARY_PROJECTION,     // Projection to return
+                null,                                       // No selection clause
+                null,                                       // No selection arguments
+                null                                        // Default sort order
         );
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
         c.moveToFirst();
-        String postDetailsTitre = c.getString(c.getColumnIndex(PostDataDAO.POST_TITLE));
-        String postDetailsDate = c.getString(c.getColumnIndex(PostDataDAO.POST_DATE));
-        String postDetailsDescription = c.getString(c.getColumnIndex(PostDataDAO.POST_DESCRIPTION));
-        String postDetailsImage = c.getString(c.getColumnIndex(PostDataDAO.POST_IMG));
-        //c'est toi qui a créer le cursor ? Renseigne toi sur le CursorLoader
-        c.close();
+        String postDetailsTitre = c.getString(c.getColumnIndex(Database.POST_TITLE));
+        String postDetailsDate = c.getString(c.getColumnIndex(Database.POST_DATE));
+        String postDetailsDescription = c.getString(c.getColumnIndex(Database.POST_DESCRIPTION));
+        String postDetailsImage = c.getString(c.getColumnIndex(Database.POST_IMG));
 
         titre.setText(postDetailsTitre);
         date.setText(postDetailsDate);
@@ -78,51 +71,4 @@ public class PostDetails extends Activity implements LoaderManager.LoaderCallbac
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
     }
-
-//N oublie pas de supprimer tout les codes mort et inutile.
-/*
-    private class GetCursorFromDataBase extends AsyncTask<Uri,Integer, String []>
-    {
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onPostExecute(String [] result) {
-            SetData(result);
-        }
-
-        @Override
-        protected String [] doInBackground(Uri... params) {
-            Uri uri = params[0];
-            Cursor c =  getContentResolver().query(uri, MyActivity.POSTDATA_SUMMARY_PROJECTION, null, null, null);
-            c.moveToFirst();
-
-            String postDetailsTitre = c.getString(c.getColumnIndex(PostDataDAO.POST_TITLE));
-            String postDetailsDate =  c.getString(c.getColumnIndex(PostDataDAO.POST_DATE));
-            String postDetailsDescription =  c.getString(c.getColumnIndex(PostDataDAO.POST_DESCRIPTION));
-            String postDetailsImage =  c.getString(c.getColumnIndex(PostDataDAO.POST_IMG));
-            String [] postDataAllDetails = new String[]{
-                    postDetailsTitre,
-                    postDetailsDate,
-                    postDetailsDescription,
-                    postDetailsImage,
-            };
-            c.close();
-            return postDataAllDetails;
-        }
-    }
-
-    private void SetData(String[] result) {
-        titre.setText(result[0]);
-        date.setText(result[1]);
-        description.setText(result[2]);
-
-        Picasso.with(this).load(result[3])
-                .error(R.drawable.error)
-                .into(image);
-    }
-
-*/
-
 }

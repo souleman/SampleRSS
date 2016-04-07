@@ -7,16 +7,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
  * Created by Souleman on 04/03/2016.
  */
-//Pourquoi Handler ? et si c'est le bon nom c'est plus DatabaseHandler
-public class Databasehandler extends SQLiteOpenHelper {
+public class Database extends SQLiteOpenHelper {
+    // Version de notre base de données
+    public final static int VERSION = 1;
+    // Nom de notre base de données
+    public final static String NOM_FICHIER = "postDatabase.db";
+    // Nom de la table de notre base
+    public static final String POST_TABLE_NAME = "postDatabase";
 
-    private static final String POST_TABLE_NAME = "Postdatabase";
-
-    private static final String POST_KEY = "id";
-    private static final String POST_TITLE = "titre";
-    private static final String POST_DESCRIPTION = "description";
-    private static final String POST_DATE = "data";
-    private static final String POST_IMG = "image";
+    public static final String POST_KEY = "id";
+    public static final String POST_TITLE = "titre";
+    public static final String POST_DESCRIPTION = "description";
+    public static final String POST_DATE = "data";
+    public static final String POST_IMG = "image";
 
     private static final String POST_TABLE_CREATE =
             "CREATE TABLE " + POST_TABLE_NAME + " (" +
@@ -29,7 +32,7 @@ public class Databasehandler extends SQLiteOpenHelper {
     private static final String POST_TABLE_DROP = "DROP TABLE IF EXISTS" + POST_TABLE_NAME + ";";
 
 
-    public Databasehandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public Database(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
 
