@@ -11,7 +11,6 @@ import android.text.TextUtils;
 /**
  * Created by Souleman on 31/03/2016.
  */
-//Le nom MyContentProvider n'est pas top
 public class MyContentProvider extends ContentProvider {
 
     private final static int CONTENT_PROVIDER_VERSION = 1;

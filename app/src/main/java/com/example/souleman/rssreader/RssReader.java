@@ -16,8 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-// CHANGER LE NOM MyActivity pas top
-public class MyActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class RssReader extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private MyListCursorAdapter mCursorAdapter;
     private static final int LOADER_SEARCH_RESULTS = 0;
@@ -25,7 +24,7 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    public MyActivity() {
+    public RssReader() {
         mContext = this;
     }
 
@@ -77,7 +76,7 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
                if (result.size() == 0) {
                     Toast.makeText(mContext, R.string.Loading_Error, Toast.LENGTH_SHORT).show();
                 } else {
-                    getLoaderManager().restartLoader(LOADER_SEARCH_RESULTS, null, MyActivity.this);
+                    getLoaderManager().restartLoader(LOADER_SEARCH_RESULTS, null, RssReader.this);
                 }
             }
         };
