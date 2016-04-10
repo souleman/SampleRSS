@@ -15,6 +15,6 @@ public class PostDataTable {
 
     private static final String SUB_VENDOR = Contract.SUB_VENDOR + AUTHORITY;
 
-    public static final String CONTENT_PROVIDER_MIME = Contract.FIRST_VENDOR + Contract.TYPE_DIR + SUB_VENDOR + ".PostData";;
-    public static final String CONTENT_PROVIDER_MIME_ITEM = Contract.FIRST_VENDOR + Contract.TYPE_ITEM + SUB_VENDOR + ".PostData";;
+    public static final String CONTENT_PROVIDER_MIME = Contract.CONTENT_PROVIDER_MIME + SUB_VENDOR + ".PostData";;
+    public static final String CONTENT_PROVIDER_MIME_ITEM =Contract.CONTENT_PROVIDER_MIME_ITEM +SUB_VENDOR + ".PostData";;
 }
