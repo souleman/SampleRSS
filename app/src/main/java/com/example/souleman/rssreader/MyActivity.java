@@ -49,8 +49,6 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
         mCursorAdapter = new MyListCursorAdapter(this, mRVI);
         mRecyclerView.setAdapter(mCursorAdapter);
 
-        MyRefreshingFunction();
-
         mSwipeRefreshLayout = (SwipeRefreshLayout) this.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -58,7 +56,9 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
                 MyRefreshingFunction();
             }
         });
-    }
+
+        MyRefreshingFunction();
+   }
 
     private void MyRefreshingFunction() {
         if (checkInternet()) {
@@ -73,10 +73,8 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
         OnTaskCompleted mCompleted = new OnTaskCompleted() {
             @Override
             public void onTaskCompleted(ArrayList<PostData> result) {
-                if (mSwipeRefreshLayout.isRefreshing()) {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
-                if (result.size() == 0) {
+                SetRefreshing();
+               if (result.size() == 0) {
                     Toast.makeText(mContext, R.string.Loading_Error, Toast.LENGTH_SHORT).show();
                 } else {
                     getLoaderManager().restartLoader(LOADER_SEARCH_RESULTS, null, MyActivity.this);
@@ -87,21 +85,26 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
         geRss.execute(mContext);
     }
 
+    private void SetRefreshing() {
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
     private boolean checkInternet() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
 
-        if (!isConnected) {
-            Toast.makeText(mContext, R.string.Make_Connexion_ON, Toast.LENGTH_LONG).show();
-        }
+        SetRefreshing();
         return isConnected;
     }
 
     static final String[] POSTDATA_SUMMARY_PROJECTION = new String[]{
             Database.POST_KEY,
             Database.POST_TITLE,
+            Database.POST_DESCRIPTION,
             Database.POST_DATE,
             Database.POST_IMG,
     };
@@ -110,7 +113,7 @@ public class MyActivity extends Activity implements LoaderManager.LoaderCallback
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(
                 mContext,                           // Parent activity context
-                Contract.CONTENT_URI,               // Table to query
+                PostDataTable.BASE_CONTENT_URI,               // Table to query
                 POSTDATA_SUMMARY_PROJECTION,        // Projection to return
                 null,                               // No selection clause
                 null,                               // No selection arguments
