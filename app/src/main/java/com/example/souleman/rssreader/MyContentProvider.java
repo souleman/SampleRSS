@@ -1,7 +1,6 @@
 package com.example.souleman.rssreader;
 
 import android.content.ContentProvider;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -22,8 +21,8 @@ public class MyContentProvider extends ContentProvider {
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        sURIMatcher.addURI(Contract.AUTHORITY, Database.POST_TABLE_NAME + "/", 1);
-        sURIMatcher.addURI(Contract.AUTHORITY, Database.POST_TABLE_NAME + "/*", 2);
+        sURIMatcher.addURI(PostDataTable.AUTHORITY, Database.POST_TABLE_NAME + "/", 1);
+        sURIMatcher.addURI(PostDataTable.AUTHORITY, Database.POST_TABLE_NAME + "/*", 2);
     }
 
     @Override
@@ -44,7 +43,7 @@ public class MyContentProvider extends ContentProvider {
         switch (match) {
             case 2:
                 long id = getId(uri);
-                selection = selection + " " + Database.POST_KEY + "=" + id;
+                selection = selection + "" + Database.POST_KEY + "=" + id;
             case 1:
                 return db.query(Database.POST_TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
             default:
@@ -58,9 +57,9 @@ public class MyContentProvider extends ContentProvider {
         int match = sURIMatcher.match(uri);
         switch (match) {
             case 1:
-                return Contract.CONTENT_PROVIDER_MIME;
+                return PostDataTable.CONTENT_PROVIDER_MIME;
             case 2:
-                return Contract.CONTENT_PROVIDER_MIME_ITEM;
+                return PostDataTable.CONTENT_PROVIDER_MIME_ITEM;
             default:
                 return null;
         }
@@ -69,20 +68,17 @@ public class MyContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //Tu fais un try sans catch et pour faire une exception très très bizarre ton fonctionnement
+
         try {
-            long id = db.insertOrThrow(Database.POST_TABLE_NAME, null, values);
-
-            if (id == -1) {
-                throw new RuntimeException(String.format(
-                        "%s : Failed to insert [%s] for unknown reasons.", "RSSReader", values, uri));
-            } else {
-                return ContentUris.withAppendedId(uri, id);
-            }
-
-        } finally {
+            db.insertOrThrow(Database.POST_TABLE_NAME, null, values);
+           }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
             db.close();
         }
+        return uri;
     }
 
     @Override

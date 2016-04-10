@@ -54,9 +54,7 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
 
         URL url;
         Context mContext = contexts[0];
-
         try {
-            mContext.getContentResolver().delete(Contract.CONTENT_URI, null, null);
             url = new URL(URL);
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
@@ -69,6 +67,7 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
             urlConnection.setConnectTimeout(30 * 1000); // 10 sec
 
             int cleanCounter1 = doc.getElementsByTagName(ITEM).getLength();
+            mContext.getContentResolver().delete(PostDataTable.BASE_CONTENT_URI, null, null);
             for (int i = 0; i < cleanCounter1; i++) {
                 PostData rss = new PostData();
                 rss.setId(i + 1);
@@ -102,59 +101,20 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
                         }
                     }
                 }
-
                 ContentValues content = new ContentValues();
-                content.put(Database.POST_KEY, rss.getId());
                 content.put(Database.POST_TITLE, rss.getTitre());
                 content.put(Database.POST_DATE, rss.getDate());
                 content.put(Database.POST_DESCRIPTION, rss.getDescription());
                 content.put(Database.POST_IMG, rss.getImage());
-                mContext.getContentResolver().insert(Contract.CONTENT_URI, content);
+                mContext.getContentResolver().insert(PostDataTable.BASE_CONTENT_URI, content);
 
                 StreamRSS.add(rss);
             }
-
-            //Ca fait longtemps que je ne parce plus les objets moi meme mais ca devrait resembler a ceci
-//            int eventType = xpp.getEventType();
-//            Article feed = null;
-//
-//            while (eventType != XmlPullParser.END_DOCUMENT) {
-//                if (eventType == XmlPullParser.START_TAG) {
-//                    if (xpp.getName().equalsIgnoreCase(TAG_ITEM)) {
-//                        feed = new Article();
-//                    } else if (feed != null ) {
-//                        if (xpp.getName().equalsIgnoreCase(TAG_TITLE)) {
-//                            feed.setTitle(xpp.nextText());
-//                        } else if (xpp.getName().equalsIgnoreCase(TAG_DESCRIPTION)) {
-//                            feed.setDescription(xpp.nextText());
-//                        } else if (xpp.getName().equalsIgnoreCase(TAG_PUB_DATE)) {
-//                            feed.setDate(xpp.nextText());
-//                        } else if (xpp.getName().equalsIgnoreCase(TAG_CONTENT_ENCODED)) {
-//                            feed.setEncodedContent(xpp.nextText());
-//                        }
-//                    }
-//                } else if (eventType == XmlPullParser.END_TAG && xpp.getName().equalsIgnoreCase(TAG_ITEM)) {
-//                    ContentValues values = new ContentValues();
-//
-//                    values.put(ArticleProvider.KEY_TITLE, feed.getTitle());
-//                    values.put(ArticleProvider.KEY_DESCRIPTION, feed.getDescription());
-//                    values.put(ArticleProvider.KEY_PUB_DATE, Utils.dateToString(feed.getDate()));
-//                    values.put(ArticleProvider.KEY_CONTENT, feed.getEncodedContent());
-//                    values.put(ArticleProvider.KEY_IMAGE_URL, feed.getImageUrl());
-//
-//                    mContext.getContentResolver().insert(
-//                            ArticleProvider.CONTENT_URI, values);
-//                }
-//                eventType = xpp.next();
-//            }
-//            return true;
             in.close();
 
         }
 
-        //Tu traite de la meme manière les catchs c'est utile ?
         catch (MalformedURLException e) {
-            e.printStackTrace();
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
