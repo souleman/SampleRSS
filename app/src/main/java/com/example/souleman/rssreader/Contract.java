@@ -6,6 +6,8 @@ package com.example.souleman.rssreader;
 
 public class Contract {
     public static final String BASE_AUTHORITY = "com.example.souleman.rssreader.";
+    //Normalement les gens n'ont pas de problème avec le copié collé :)
+    //public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + BASE_AUTHORITY);
     public static final String BASE_CONTENT_URI = "content://";
 
     public static final String FIRST_VENDOR = "vnd.android.cursor.";
