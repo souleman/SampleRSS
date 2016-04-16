@@ -1,6 +1,5 @@
 package com.example.souleman.rssreader;
 
-import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -10,20 +9,23 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
-public class RssReader extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class RssReader extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private MyListCursorAdapter mCursorAdapter;
+    private CursorAdapter mCursorAdapter;
     private static final int LOADER_SEARCH_RESULTS = 0;
     private final Context mContext;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private LinearLayout mLinearLayout;
 
     public RssReader() {
         mContext = this;
@@ -34,6 +36,7 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
 
+        mLinearLayout = (LinearLayout) findViewById(R.id.mainLL);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -46,7 +49,7 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
         };
         getLoaderManager().initLoader(LOADER_SEARCH_RESULTS, null, this);
 
-        mCursorAdapter = new MyListCursorAdapter(this, mRVI);
+        mCursorAdapter = new CursorAdapter(this, mRVI);
         mRecyclerView.setAdapter(mCursorAdapter);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) this.findViewById(R.id.swipeRefreshLayout);
@@ -56,7 +59,6 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
                 refreshingTask();
             }
         });
-
         refreshingTask();
     }
 
@@ -64,8 +66,8 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
         if (checkInternet()) {
             executeMyTask();
         } else {
-            //Pense Snackbar
-            Toast.makeText(this, R.string.NetWork_Missing, Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar.make(mLinearLayout, R.string.network_missing, Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 
@@ -75,8 +77,8 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
             public void onTaskCompleted(ArrayList<PostData> result) {
                 setRefreshing();
                 if (result.size() == 0) {
-                    //Pense Snackbar
-                    Toast.makeText(mContext, R.string.Loading_Error, Toast.LENGTH_SHORT).show();
+                    Snackbar snackbar = Snackbar.make(mLinearLayout, R.string.loading_error, Snackbar.LENGTH_LONG);
+                    snackbar.show();
                 } else {
                     getLoaderManager().restartLoader(LOADER_SEARCH_RESULTS, null, RssReader.this);
                 }
