@@ -37,6 +37,7 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        //tu pourrais faire en sorte que c'est ton objet qui soit listener
         RecyclerViewInterface mRVI = new RecyclerViewInterface() {
             @Override
             public int GetRecyclerViewPosition(View v) {
@@ -57,23 +58,27 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
         });
 
         MyRefreshingFunction();
-   }
+    }
 
+    //attention nommage
     private void MyRefreshingFunction() {
         if (checkInternet()) {
             ExecuteMyTask();
         } else {
+            //Pense Snackbar
             Toast.makeText(this, R.string.NetWork_Missing, Toast.LENGTH_SHORT).show();
         }
     }
 
     // RSS Reader Function
+    //attention nommage
     private void ExecuteMyTask() {
         OnTaskCompleted mCompleted = new OnTaskCompleted() {
             @Override
             public void onTaskCompleted(ArrayList<PostData> result) {
                 SetRefreshing();
-               if (result.size() == 0) {
+                if (result.size() == 0) {
+                    //Pense Snackbar
                     Toast.makeText(mContext, R.string.Loading_Error, Toast.LENGTH_SHORT).show();
                 } else {
                     getLoaderManager().restartLoader(LOADER_SEARCH_RESULTS, null, RssReader.this);
@@ -84,6 +89,7 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
         geRss.execute(mContext);
     }
 
+    //attention nommage
     private void SetRefreshing() {
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);

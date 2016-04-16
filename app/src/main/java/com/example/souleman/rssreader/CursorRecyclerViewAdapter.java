@@ -66,6 +66,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
 
     public void swapCursor(Cursor newCursor) {
         if (newCursor == mCursor) {
+            //Tu teste mais tu ne fais rien ?
         }
         final Cursor oldCursor = mCursor;
         if (oldCursor != null && mDataSetObserver != null) {
@@ -84,7 +85,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
             mDataValid = false;
             notifyDataSetChanged();
         }
-       }
+    }
 
     private class NotifyingDataSetObserver extends DataSetObserver {
         @Override

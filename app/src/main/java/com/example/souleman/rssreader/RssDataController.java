@@ -66,6 +66,7 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
             urlConnection.setReadTimeout(30 * 1000); // 10 sec
             urlConnection.setConnectTimeout(30 * 1000); // 10 sec
 
+            //La prochaine étape est de supprimer ca pour le remplacer par retrofit ou autre pour que ce soit fait proprement
             int cleanCounter1 = doc.getElementsByTagName(ITEM).getLength();
             mContext.getContentResolver().delete(PostDataTable.BASE_CONTENT_URI, null, null);
             for (int i = 0; i < cleanCounter1; i++) {
@@ -113,7 +114,7 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
             in.close();
 
         }
-
+        //Tu traite de la meme manière les catchs c'est utile ?
         catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

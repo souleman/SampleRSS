@@ -11,6 +11,7 @@ import android.text.TextUtils;
 /**
  * Created by Souleman on 31/03/2016.
  */
+//Attention au nom
 public class MyContentProvider extends ContentProvider {
 
     private final static int CONTENT_PROVIDER_VERSION = 1;
@@ -20,6 +21,7 @@ public class MyContentProvider extends ContentProvider {
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
+        //Peut etre mettre des statics pour que ce soit parlant et non des int comme ça.
         sURIMatcher.addURI(PostDataTable.AUTHORITY, Database.POST_TABLE_NAME + "/", 1);
         sURIMatcher.addURI(PostDataTable.AUTHORITY, Database.POST_TABLE_NAME + "/*", 2);
     }
@@ -36,8 +38,8 @@ public class MyContentProvider extends ContentProvider {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         int match = sURIMatcher.match(uri);
 
-        if(TextUtils.isEmpty(selection)){
-            selection="";
+        if (TextUtils.isEmpty(selection)) {
+            selection = "";
         }
         switch (match) {
             case 2:
@@ -70,11 +72,9 @@ public class MyContentProvider extends ContentProvider {
 
         try {
             db.insertOrThrow(Database.POST_TABLE_NAME, null, values);
-           }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             db.close();
         }
         return uri;
@@ -85,8 +85,8 @@ public class MyContentProvider extends ContentProvider {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int res;
         int match = sURIMatcher.match(uri);
-        if(TextUtils.isEmpty(selection)){
-            selection="";
+        if (TextUtils.isEmpty(selection)) {
+            selection = "";
         }
 
         switch (match) {
@@ -107,8 +107,8 @@ public class MyContentProvider extends ContentProvider {
         int match = sURIMatcher.match(uri);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int res;
-        if(TextUtils.isEmpty(selection)){
-            selection="";
+        if (TextUtils.isEmpty(selection)) {
+            selection = "";
         }
         switch (match) {
             case 2:
@@ -128,6 +128,7 @@ public class MyContentProvider extends ContentProvider {
         if (lastPathSegment != null) {
             return Long.parseLong(lastPathSegment);
         }
+        //il peut etre plus propre de mettre le else
         return -1;
     }
 
