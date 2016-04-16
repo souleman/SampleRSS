@@ -10,7 +10,10 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -80,7 +83,21 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
 
                                 break;
                             case PUBDATE:
-                                rss.setDate(document.getElementsByTagName(ITEM).item(i).getChildNodes().item(j).getTextContent());
+
+                                String rssDate = document.getElementsByTagName(ITEM).item(i).getChildNodes().item(j).getTextContent();
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
+                                String postDataDate = null;
+                                try
+                                {
+                                    Date date = (Date)sdf.parse(rssDate);
+                                    SimpleDateFormat mdate = new SimpleDateFormat("MMM dd yyyy, HH:mm");
+                                    postDataDate  = mdate.format(date);
+                                }
+                                catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                rss.setDate(postDataDate);
                                 break;
 
                             // Description et images

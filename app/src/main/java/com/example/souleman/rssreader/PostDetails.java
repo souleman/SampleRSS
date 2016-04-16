@@ -7,6 +7,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -70,10 +71,8 @@ public class PostDetails extends Activity implements LoaderManager.LoaderCallbac
         String postDetailsImage = c.getString(c.getColumnIndex(Database.POST_IMG));
 
         titre.setText(postDetailsTitre);
-        //Peut etre rendre plus sexy l'affiche de la date car +0000 on s'en moque
         date.setText(postDetailsDate);
-        //Attention tu as du contenu html envoyé a une textview comme ca il risque d'avoir des problèmes.
-        description.setText(postDetailsDescription);
+        description.setText(Html.fromHtml(postDetailsDescription));
 
         Picasso.with(this).load(postDetailsImage)
                 .error(R.drawable.error)
