@@ -103,7 +103,7 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
                     }
                 }
                 ContentValues content = new ContentValues();
-                content.put(Database.POST_TITLE, "TITRE");
+                content.put(Database.POST_TITLE, rss.getTitre());
                 content.put(Database.POST_DATE, rss.getDate());
                 content.put(Database.POST_DESCRIPTION, rss.getDescription());
                 content.put(Database.POST_IMG, rss.getImage());
