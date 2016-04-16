@@ -41,8 +41,6 @@ public class PostDetails extends Activity implements LoaderManager.LoaderCallbac
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-       // Uri uri = Uri.parse(PostDataTable.CONTENT_URI_ITEM + "" + id);
-
         Uri uri = PostDataTable.buildItemUri(id);
         return new CursorLoader(
                 getApplicationContext(),                    // Parent activity context

@@ -7,6 +7,5 @@ import android.view.View;
  */
 //Peut devenir une inner class
 public interface RecyclerViewInterface {
-    //attention nommage sur des Getter et Setter.
-    int GetRecyclerViewPosition(View v);
+    int getPosition(View v);
 }

@@ -29,7 +29,7 @@ public class CursorAdapter extends CursorRecyclerViewAdapter<CursorAdapter.ViewH
     public void onClick(final View v) {
         Context context = v.getContext();
         //si tu fais un listerner c'est pour faire le traitement dans le listener.
-        int position = listener.GetRecyclerViewPosition(v);
+        int position = listener.getPosition(v);
 
         if (position != RecyclerView.NO_POSITION) {
             final Cursor cursor = this.getItem(position);

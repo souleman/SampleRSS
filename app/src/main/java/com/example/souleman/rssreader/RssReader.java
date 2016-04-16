@@ -43,7 +43,7 @@ public class RssReader extends AppCompatActivity implements LoaderManager.Loader
         //tu pourrais faire en sorte que c'est ton objet qui soit listener
         RecyclerViewInterface mRVI = new RecyclerViewInterface() {
             @Override
-            public int GetRecyclerViewPosition(View v) {
+            public int getPosition(View v) {
                 return mRecyclerView.getChildAdapterPosition(v);
             }
         };
