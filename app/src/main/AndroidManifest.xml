@@ -25,7 +25,7 @@
             android:label="@string/app_name"/>
 
         <provider android:name="com.example.souleman.rssreader.MyContentProvider"
-            android:authorities="com.example.souleman.rssreader.MyContentProvider" />
+            android:authorities="com.example.souleman.rssreader" />
 
     </application>
 

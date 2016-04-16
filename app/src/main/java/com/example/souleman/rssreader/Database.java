@@ -8,12 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Souleman on 04/03/2016.
  */
 public class Database extends SQLiteOpenHelper {
-    // Version de notre base de données
-    //Tu ne l'utilise pas
-    public final static int VERSION = 1;
-    // Nom de notre base de données
     public final static String NOM_FICHIER = "postDatabase.db";
-    // Nom de la table de notre base
     public static final String POST_TABLE_NAME = "postDatabase";
 
     //Rien a faire ici, Comment tu fais si tu as 100 tables ?

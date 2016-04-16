@@ -15,15 +15,15 @@ import android.text.TextUtils;
 public class MyContentProvider extends ContentProvider {
 
     private final static int CONTENT_PROVIDER_VERSION = 1;
-
+    private final static int All_TABLE = 1;
+    private final static int ITEM_TABLE = 2;
     private Database dbHelper;
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        //Peut etre mettre des statics pour que ce soit parlant et non des int comme ça.
-        sURIMatcher.addURI(PostDataTable.AUTHORITY, Database.POST_TABLE_NAME + "/", 1);
-        sURIMatcher.addURI(PostDataTable.AUTHORITY, Database.POST_TABLE_NAME + "/*", 2);
+        sURIMatcher.addURI(Contract.BASE_AUTHORITY, Database.POST_TABLE_NAME + "/", All_TABLE);
+        sURIMatcher.addURI(Contract.BASE_AUTHORITY, Database.POST_TABLE_NAME + "/*", ITEM_TABLE);
     }
 
     @Override
@@ -42,10 +42,10 @@ public class MyContentProvider extends ContentProvider {
             selection = "";
         }
         switch (match) {
-            case 2:
+            case ITEM_TABLE:
                 long id = getId(uri);
                 selection = selection + "" + Database.POST_KEY + "=" + id;
-            case 1:
+            case All_TABLE:
                 return db.query(Database.POST_TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -57,9 +57,9 @@ public class MyContentProvider extends ContentProvider {
     public String getType(Uri uri) {
         int match = sURIMatcher.match(uri);
         switch (match) {
-            case 1:
+            case All_TABLE:
                 return PostDataTable.CONTENT_PROVIDER_MIME;
-            case 2:
+            case ITEM_TABLE:
                 return PostDataTable.CONTENT_PROVIDER_MIME_ITEM;
             default:
                 return null;
@@ -90,10 +90,10 @@ public class MyContentProvider extends ContentProvider {
         }
 
         switch (match) {
-            case 2:
+            case ITEM_TABLE:
                 long id = getId(uri);
                 selection = selection + " " + Database.POST_KEY + "=" + id;
-            case 1:
+            case All_TABLE:
                 res = db.delete(Database.POST_TABLE_NAME, selection, selectionArgs);
                 db.close();
                 return res;
@@ -111,10 +111,10 @@ public class MyContentProvider extends ContentProvider {
             selection = "";
         }
         switch (match) {
-            case 2:
+            case ITEM_TABLE:
                 long id = getId(uri);
                 selection = selection + " " + Database.POST_KEY + "=" + id;
-            case 1:
+            case All_TABLE:
                 res = db.update(Database.POST_TABLE_NAME, values, selection, selectionArgs);
                 db.close();
                 return res;
@@ -128,8 +128,8 @@ public class MyContentProvider extends ContentProvider {
         if (lastPathSegment != null) {
             return Long.parseLong(lastPathSegment);
         }
-        //il peut etre plus propre de mettre le else
-        return -1;
+        else{
+            return -1;
+        }
     }
-
 }

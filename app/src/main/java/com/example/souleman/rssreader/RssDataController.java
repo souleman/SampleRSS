@@ -68,7 +68,7 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
 
             //La prochaine étape est de supprimer ca pour le remplacer par retrofit ou autre pour que ce soit fait proprement
             int cleanCounter1 = doc.getElementsByTagName(ITEM).getLength();
-            mContext.getContentResolver().delete(PostDataTable.BASE_CONTENT_URI, null, null);
+            mContext.getContentResolver().delete(PostDataTable.CONTENT_URI, null, null);
             for (int i = 0; i < cleanCounter1; i++) {
                 PostData rss = new PostData();
                 rss.setId(i + 1);
@@ -103,11 +103,11 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
                     }
                 }
                 ContentValues content = new ContentValues();
-                content.put(Database.POST_TITLE, rss.getTitre());
+                content.put(Database.POST_TITLE, "TITRE");
                 content.put(Database.POST_DATE, rss.getDate());
                 content.put(Database.POST_DESCRIPTION, rss.getDescription());
                 content.put(Database.POST_IMG, rss.getImage());
-                mContext.getContentResolver().insert(PostDataTable.BASE_CONTENT_URI, content);
+                mContext.getContentResolver().insert(PostDataTable.CONTENT_URI, content);
 
                 StreamRSS.add(rss);
             }

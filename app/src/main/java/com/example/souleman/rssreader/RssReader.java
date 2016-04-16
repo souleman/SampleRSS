@@ -8,6 +8,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -53,17 +54,16 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                MyRefreshingFunction();
+                refreshingTask();
             }
         });
 
-        MyRefreshingFunction();
+        refreshingTask();
     }
 
-    //attention nommage
-    private void MyRefreshingFunction() {
+    private void refreshingTask() {
         if (checkInternet()) {
-            ExecuteMyTask();
+            executeMyTask();
         } else {
             //Pense Snackbar
             Toast.makeText(this, R.string.NetWork_Missing, Toast.LENGTH_SHORT).show();
@@ -72,7 +72,7 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
 
     // RSS Reader Function
     //attention nommage
-    private void ExecuteMyTask() {
+    private void executeMyTask() {
         OnTaskCompleted mCompleted = new OnTaskCompleted() {
             @Override
             public void onTaskCompleted(ArrayList<PostData> result) {
@@ -116,9 +116,10 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri uri = PostDataTable.buildUri();
         return new CursorLoader(
                 mContext,                           // Parent activity context
-                PostDataTable.BASE_CONTENT_URI,               // Table to query
+                uri,                                // Table to query
                 POSTDATA_SUMMARY_PROJECTION,        // Projection to return
                 null,                               // No selection clause
                 null,                               // No selection arguments
