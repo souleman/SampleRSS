@@ -5,28 +5,24 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Created by Souleman on 09/02/2016.
  */
 public class RssDataController extends AsyncTask<Context, Integer, ArrayList<PostData>> {
-    public static final String TITLE = "title";
-    public static final String PUBDATE = "pubDate";
-    public static final String DESCRIPTION = "description";
-    public static final String ITEM = "item";
+    private static final String TITLE = "title";
+    private static final String PUBDATE = "pubDate";
+    private static final String DESCRIPTION = "description";
+    private static final String ITEM = "item";
 
 
     private final OnTaskCompleted listener;
@@ -63,8 +59,8 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
             DocumentBuilder docBuild = docBuildFact.newDocumentBuilder();
             Document doc = docBuild.parse(in);
 
-            urlConnection.setReadTimeout(30 * 1000); // 10 sec
-            urlConnection.setConnectTimeout(30 * 1000); // 10 sec
+            urlConnection.setReadTimeout(30 * 1000); // 30 sec
+            urlConnection.setConnectTimeout(30 * 1000); // 30 sec
 
             //La prochaine étape est de supprimer ca pour le remplacer par retrofit ou autre pour que ce soit fait proprement
             int cleanCounter1 = doc.getElementsByTagName(ITEM).getLength();
@@ -114,16 +110,7 @@ public class RssDataController extends AsyncTask<Context, Integer, ArrayList<Pos
             in.close();
 
         }
-        //Tu traite de la meme manière les catchs c'est utile ?
-        catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
+        catch (Exception e) {
             e.printStackTrace();
         } finally {
             assert urlConnection != null;

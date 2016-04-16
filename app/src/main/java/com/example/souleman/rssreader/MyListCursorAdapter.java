@@ -1,6 +1,5 @@
 package com.example.souleman.rssreader;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,14 +18,13 @@ import com.squareup.picasso.Picasso;
 //Attention au nom
 public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorAdapter.ViewHolder> implements View.OnClickListener {
     //attention nom
-    private final Activity myActivity;
+    private final Context myContext;
     private final RecyclerViewInterface listener;
 
     public MyListCursorAdapter(Context context, RecyclerViewInterface mRVI) {
         super(null);
         this.listener = mRVI;
-        //Pas bon si tu veux l'activity recupère l'activity
-        this.myActivity = (Activity) context;
+        this.myContext =  context;
     }
 
     @Override
@@ -68,8 +66,7 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
-        //si tu regarde la doc c'est le context qu'il veut. Alors donne le context et non l'activity car la ton myActivity prend plus de place que context.
-        Picasso.with(myActivity).load(String.valueOf((cursor.getString(cursor.getColumnIndex(Database.POST_IMG)))))
+        Picasso.with(myContext).load(String.valueOf((cursor.getString(cursor.getColumnIndex(Database.POST_IMG)))))
                 .error(R.drawable.error)
                 .into(viewHolder.postImageView);
 

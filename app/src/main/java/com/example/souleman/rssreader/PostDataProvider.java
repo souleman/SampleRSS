@@ -11,8 +11,7 @@ import android.text.TextUtils;
 /**
  * Created by Souleman on 31/03/2016.
  */
-//Attention au nom
-public class MyContentProvider extends ContentProvider {
+public class PostDataProvider extends ContentProvider {
 
     private final static int CONTENT_PROVIDER_VERSION = 1;
     private final static int All_TABLE = 1;

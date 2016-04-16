@@ -34,7 +34,6 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
 
-        // Initialize recycler view
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -70,13 +69,11 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
         }
     }
 
-    // RSS Reader Function
-    //attention nommage
     private void executeMyTask() {
         OnTaskCompleted mCompleted = new OnTaskCompleted() {
             @Override
             public void onTaskCompleted(ArrayList<PostData> result) {
-                SetRefreshing();
+                setRefreshing();
                 if (result.size() == 0) {
                     //Pense Snackbar
                     Toast.makeText(mContext, R.string.Loading_Error, Toast.LENGTH_SHORT).show();
@@ -89,8 +86,7 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
         geRss.execute(mContext);
     }
 
-    //attention nommage
-    private void SetRefreshing() {
+    private void setRefreshing() {
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
@@ -102,7 +98,7 @@ public class RssReader extends Activity implements LoaderManager.LoaderCallbacks
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
 
-        SetRefreshing();
+        setRefreshing();
         return isConnected;
     }
 
