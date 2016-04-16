@@ -15,16 +15,14 @@ import com.squareup.picasso.Picasso;
 /**
  * Created by Souleman on 24/03/2016.
  */
-//Attention au nom
-public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorAdapter.ViewHolder> implements View.OnClickListener {
-    //attention nom
-    private final Context myContext;
+public class CursorAdapter extends CursorRecyclerViewAdapter<CursorAdapter.ViewHolder> implements View.OnClickListener {
+    private final Context context;
     private final RecyclerViewInterface listener;
 
-    public MyListCursorAdapter(Context context, RecyclerViewInterface mRVI) {
+    public CursorAdapter(Context context, RecyclerViewInterface mRVI) {
         super(null);
         this.listener = mRVI;
-        this.myContext =  context;
+        this.context =  context;
     }
 
     @Override
@@ -66,7 +64,7 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
-        Picasso.with(myContext).load(String.valueOf((cursor.getString(cursor.getColumnIndex(Database.POST_IMG)))))
+        Picasso.with(context).load(String.valueOf((cursor.getString(cursor.getColumnIndex(Database.POST_IMG)))))
                 .error(R.drawable.error)
                 .into(viewHolder.postImageView);
 
